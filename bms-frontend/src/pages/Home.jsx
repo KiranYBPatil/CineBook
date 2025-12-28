@@ -9,7 +9,7 @@ const Home = () => {
 
   const handleAskAI = () => {
     window.open(
-      "https://patilkiran-movie-rag-ai.hf.space/?__theme=system&deep_link=4AZxsaIMgZ0",
+      "https://movie-frontend-3mve.vercel.app/",
       "_blank"
     );
   };
