@@ -1,7 +1,7 @@
 {
   "name": "bookmyscreen",
   "version": "1.0.0",
-  "main": "dist/server.ts",
+  "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon src/server.ts",
     "build": "tsc",
