@@ -25,7 +25,6 @@
     "nodemailer": "^7.0.4",
     "zod": "^3.25.67"
   },
-<<<<<<< HEAD
   "devDependencies": {
     "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.19",
@@ -38,16 +37,4 @@
     "typescript": "^5.8.3"
   }
   
-=======
- "devDependencies": {
-  "@types/express": "^5.0.3",
-  "@types/cors": "^2.8.19",
-  "@types/cookie-parser": "^1.4.9",
-  "@types/node": "^24.0.10",
-  "nodemon": "^3.1.10",
-  "ts-node": "^10.9.2",
-  "typescript": "^5.8.3"
-}
-
->>>>>>> bccff77cb28450856a139870ad32e65e3d0ec1a6
 }

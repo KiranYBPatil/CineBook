@@ -25,11 +25,7 @@ app.use(
 );
 
 // Handle preflight
-<<<<<<< HEAD
 app.options("/", cors());
-=======
-app.options("*", cors());
->>>>>>> bccff77cb28450856a139870ad32e65e3d0ec1a6
 
 app.use(cookieParser());
 app.use(express.json());
@@ -42,8 +38,4 @@ app.get("/", (_req: Request, res: Response) => {
 
 app.use(globalErrorHandler);
 
-<<<<<<< HEAD
 export default app;
-=======
-export default app;
->>>>>>> bccff77cb28450856a139870ad32e65e3d0ec1a6

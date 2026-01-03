@@ -4,7 +4,6 @@
     "module": "commonjs",
     "rootDir": "src",
     "outDir": "dist",
-<<<<<<< HEAD
 
     "strict": true,
     "esModuleInterop": true,
@@ -19,12 +18,4 @@
     "src/**/*.ts",
     "src/types/**/*.d.ts"
   ]
-=======
-    "strict": true,
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true
-  },
-  "include": ["src/**/*"]
->>>>>>> bccff77cb28450856a139870ad32e65e3d0ec1a6
 }
