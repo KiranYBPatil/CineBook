@@ -21,7 +21,7 @@ const Home = () => {
       <div className="flex justify-end gap-4">
         {/* PROFILE BUTTON */}
   <button
-  onClick={() => navigate("/profile")}
+  onClick={() => navigate("/My Bookings")}
   className="
     group relative
     flex items-center gap-2
