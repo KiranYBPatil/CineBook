@@ -24,7 +24,6 @@ services:
       - ./bms-backend/.env
     environment:
       - MONGO_CONNECTION_STRING=mongodb://mongo:27017/bookmyscreen
-      - FRONTEND_URL=http://localhost
     depends_on:
       - mongo
     networks:
