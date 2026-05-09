@@ -103,7 +103,7 @@
 
     # ─── 6. Build & Start containers ─────────────────
     - name: Build and start containers
-      shell: docker compose up -d --build
+      shell: VITE_BACKEND_URL=http://{{ ec2_ip }}:9000/api/v1 docker compose up -d --build
       args:
         chdir: "{{ app_dir }}"
       become_user: ubuntu

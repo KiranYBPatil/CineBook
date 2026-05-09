@@ -36,7 +36,7 @@ services:
       context: ./bms-frontend
       dockerfile: Dockerfile
       args:
-        VITE_BACKEND_URL: http://localhost:9000/api/v1
+        VITE_BACKEND_URL: ${VITE_BACKEND_URL:-http://localhost:9000/api/v1}
     container_name: cinebook-frontend
     restart: unless-stopped
     ports:
