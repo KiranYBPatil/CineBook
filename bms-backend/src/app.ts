@@ -15,7 +15,12 @@ app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true); // Postman / server-to-server
-      if (origin === "http://localhost:5173") return callback(null, true);
+      const allowed = [
+        "http://localhost:5173",  // Vite dev server
+        "http://localhost",       // Docker Nginx (port 80)
+        "http://localhost:80",    // Docker Nginx (explicit)
+      ];
+      if (allowed.includes(origin)) return callback(null, true);
       if (origin.endsWith(".onrender.com")) return callback(null, true);
       return callback(new Error("Not allowed by CORS"));
     },
