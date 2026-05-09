@@ -9,14 +9,12 @@
   become: true
 
   vars:
-    backend_image: "cinebook-backend:latest"
-    frontend_image: "cinebook-frontend:latest"
-    app_dir: /opt/cinebook
-    mongo_volume: cinebook_mongo_data
+    app_dir: /home/ubuntu/CineBook
+    ec2_ip: "3.25.162.81"
 
   tasks:
 
-    # ─── 1. Install Docker (if not present) ──────────
+    # ─── 1. Install Dependencies ──────────────────────
     - name: Install required system packages
       apt:
         name:
@@ -24,19 +22,28 @@
           - ca-certificates
           - curl
           - gnupg
-          - lsb-release
+          - git
         state: present
         update_cache: yes
 
+    # ─── 2. Install Docker ────────────────────────────
+    - name: Create keyrings directory
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: "0755"
+
     - name: Add Docker GPG key
-      apt_key:
+      get_url:
         url: https://download.docker.com/linux/ubuntu/gpg
-        state: present
+        dest: /etc/apt/keyrings/docker.asc
+        mode: "0644"
 
     - name: Add Docker repository
-      apt_repository:
-        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
-        state: present
+      shell: |
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+      args:
+        creates: /etc/apt/sources.list.d/docker.list
 
     - name: Install Docker Engine
       apt:
@@ -54,88 +61,64 @@
         state: started
         enabled: yes
 
-    # ─── 2. Prepare Application Directory ────────────
-    - name: Create application directory
-      file:
-        path: "{{ app_dir }}"
-        state: directory
-        mode: "0755"
+    - name: Add ubuntu user to docker group
+      user:
+        name: ubuntu
+        groups: docker
+        append: yes
 
-    # ─── 3. Pull Latest Docker Images ────────────────
-    - name: Pull backend image
-      docker_image:
-        name: "{{ backend_image }}"
-        source: pull
-        force_source: yes
+    # ─── 3. Clone / Update Repo ───────────────────────
+    - name: Clone CineBook repository
+      git:
+        repo: https://github.com/KiranYBPatil/CineBook.git
+        dest: "{{ app_dir }}"
+        version: main
+        force: yes
+      become_user: ubuntu
 
-    - name: Pull frontend image
-      docker_image:
-        name: "{{ frontend_image }}"
-        source: pull
-        force_source: yes
+    # ─── 4. Create .env file ──────────────────────────
+    - name: Create backend .env file
+      copy:
+        dest: "{{ app_dir }}/bms-backend/.env"
+        content: |
+          PORT=9000
+          MONGO_CONNECTION_STRING=mongodb://mongo:27017/bookmyscreen
+          JWT_SECRET=cinebook_jwt_secret_2026
+          ACCESS_TOKEN_SECRET=cinebook_access_token_secret_2026
+          REFRESH_TOKEN_SECRET=cinebook_refresh_token_secret_2026
+          HASH_SECRET=cinebook_hash_secret_2026
+          FRONTEND_URL=http://{{ ec2_ip }}
+          NODEMAILER_EMAIL=
+          NODEMAILER_PASSWORD=
+        owner: ubuntu
+        mode: "0600"
 
-    # ─── 4. Create Docker Network ────────────────────
-    - name: Create cinebook Docker network
-      docker_network:
-        name: cinebook-network
-        state: present
+    # ─── 5. Stop existing containers ─────────────────
+    - name: Stop existing containers
+      shell: docker compose down --remove-orphans
+      args:
+        chdir: "{{ app_dir }}"
+      become_user: ubuntu
+      ignore_errors: yes
 
-    # ─── 5. Run MongoDB Container ────────────────────
-    - name: Run MongoDB container
-      docker_container:
-        name: cinebook-mongo
-        image: mongo:7
-        state: started
-        restart_policy: unless-stopped
-        networks:
-          - name: cinebook-network
-        volumes:
-          - "{{ mongo_volume }}:/data/db"
-        ports:
-          - "27017:27017"
+    # ─── 6. Build & Start containers ─────────────────
+    - name: Build and start containers
+      shell: docker compose up -d --build
+      args:
+        chdir: "{{ app_dir }}"
+      become_user: ubuntu
 
-    # ─── 6. Run Backend Container ────────────────────
-    - name: Run Backend container
-      docker_container:
-        name: cinebook-backend
-        image: "{{ backend_image }}"
-        state: started
-        restart_policy: unless-stopped
-        recreate: yes
-        networks:
-          - name: cinebook-network
-        ports:
-          - "9000:9000"
-        env:
-          PORT: "9000"
-          MONGO_CONNECTION_STRING: "mongodb://cinebook-mongo:27017/bookmyscreen"
-          JWT_SECRET: "{{ lookup('env', 'JWT_SECRET') | default('cinebook_jwt_secret_prod', true) }}"
-          HASH_SECRET: "{{ lookup('env', 'HASH_SECRET') | default('cinebook_hash_secret_prod', true) }}"
-          FRONTEND_URL: "http://{{ ansible_host }}"
-
-    # ─── 7. Run Frontend Container ───────────────────
-    - name: Run Frontend container
-      docker_container:
-        name: cinebook-frontend
-        image: "{{ frontend_image }}"
-        state: started
-        restart_policy: unless-stopped
-        recreate: yes
-        networks:
-          - name: cinebook-network
-        ports:
-          - "80:80"
-
-    # ─── 8. Health Check ─────────────────────────────
+    # ─── 7. Health Check ──────────────────────────────
     - name: Wait for backend to be healthy
       uri:
         url: "http://localhost:9000/"
         status_code: 200
       register: health
       until: health.status == 200
-      retries: 10
-      delay: 5
+      retries: 15
+      delay: 10
 
+    # ─── 8. Done ──────────────────────────────────────
     - name: Deployment complete
       debug:
-        msg: "✅ CineBook deployed successfully! Frontend: http://{{ ansible_host }}, API: http://{{ ansible_host }}:9000"
+        msg: "✅ CineBook deployed! Frontend: http://{{ ec2_ip }}  API: http://{{ ec2_ip }}:9000"
