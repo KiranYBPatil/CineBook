@@ -11,16 +11,18 @@ dotenv.config();
 const app = express();
 
 // ✅ CORS MUST BE FIRST
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost",
+  "http://localhost:80",
+  process.env.FRONTEND_URL,       // Dynamically allow EC2 IP or any domain
+].filter(Boolean);
+
 app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true); // Postman / server-to-server
-      const allowed = [
-        "http://localhost:5173",  // Vite dev server
-        "http://localhost",       // Docker Nginx (port 80)
-        "http://localhost:80",    // Docker Nginx (explicit)
-      ];
-      if (allowed.includes(origin)) return callback(null, true);
+      if (allowedOrigins.includes(origin)) return callback(null, true);
       if (origin.endsWith(".onrender.com")) return callback(null, true);
       return callback(new Error("Not allowed by CORS"));
     },
