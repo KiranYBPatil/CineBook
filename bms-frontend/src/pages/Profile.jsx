@@ -41,34 +41,82 @@ export default function Profile() {
     navigate("/login");
   };
 
-  // 📄 PDF GENERATOR
+  // PDF GENERATOR — uses only ASCII-safe characters for jsPDF compatibility
   const downloadTicket = (booking) => {
     const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
 
-    doc.setFontSize(16);
-    doc.text("🎬 CineBook - Movie Ticket", 20, 20);
+    // --- Parse DD-MM-YYYY date safely ---
+    let dayName = "";
+    if (booking.showDate) {
+      const parts = booking.showDate.split("-");
+      if (parts.length === 3) {
+        const parsed = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+        if (!isNaN(parsed.getTime())) {
+          dayName = parsed.toLocaleDateString("en-IN", { weekday: "long" });
+        }
+      }
+    }
 
+    // --- Ticket border ---
+    doc.setDrawColor(100, 50, 150); // purple
+    doc.setLineWidth(1.5);
+    doc.roundedRect(12, 10, pageWidth - 24, 140, 4, 4);
+
+    // --- Header ---
+    doc.setFillColor(100, 50, 150);
+    doc.rect(12, 10, pageWidth - 24, 20, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(18);
+    doc.setFont("helvetica", "bold");
+    doc.text("CINEBOOK - Movie Ticket", pageWidth / 2, 23, { align: "center" });
+
+    // --- Divider line ---
+    doc.setDrawColor(200, 200, 200);
+    doc.setLineWidth(0.5);
+    doc.line(20, 38, pageWidth - 20, 38);
+
+    // --- Body content ---
+    doc.setTextColor(40, 40, 40);
     doc.setFontSize(12);
-    doc.text(`Name: ${booking.user.username}`, 20, 35);
-    doc.text(`Email: ${booking.user.email}`, 20, 45);
-    doc.text(`Movie: ${booking.movie?.title}`, 20, 60);
-    doc.text(`Theater: ${booking.theater?.name}`, 20, 70);
+    doc.setFont("helvetica", "normal");
 
-    doc.text(
-      `Date: ${booking.showDate} (${new Date(
-        booking.showDate
-      ).toLocaleDateString("en-IN", { weekday: "long" })})`,
-      20,
-      80
-    );
+    let y = 48;
+    const lineGap = 12;
 
-    doc.text(`Show Time: ${booking.showTime}`, 20, 90);
-    doc.text(`Seats: ${booking.seats.join(", ")}`, 20, 100);
-    doc.text(`Total Paid: ₹${booking.amount}`, 20, 110);
+    const addField = (label, value) => {
+      doc.setFont("helvetica", "bold");
+      doc.text(`${label}:`, 22, y);
+      doc.setFont("helvetica", "normal");
+      doc.text(`${value || "N/A"}`, 70, y);
+      y += lineGap;
+    };
 
-    doc.text("Enjoy your show 🍿", 20, 130);
+    addField("Name", booking.user?.username);
+    addField("Email", booking.user?.email);
+    addField("Movie", booking.movie?.title);
+    addField("Theater", booking.theater?.name);
+    addField("Date", dayName ? `${booking.showDate} (${dayName})` : booking.showDate);
+    addField("Show Time", booking.showTime);
+    addField("Seats", booking.seats?.join(", "));
 
-    doc.save(`ticket-${booking._id}.pdf`);
+    // --- Total amount (highlighted) ---
+    y += 4;
+    doc.setFillColor(245, 240, 255);
+    doc.roundedRect(20, y - 6, pageWidth - 40, 14, 2, 2, "F");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(14);
+    doc.setTextColor(100, 50, 150);
+    doc.text(`Total Paid: Rs. ${booking.amount}`, pageWidth / 2, y + 3, { align: "center" });
+
+    // --- Footer ---
+    y += 22;
+    doc.setFontSize(10);
+    doc.setTextColor(130, 130, 130);
+    doc.setFont("helvetica", "italic");
+    doc.text("Enjoy your show! - CineBook", pageWidth / 2, y, { align: "center" });
+
+    doc.save(`CineBook-Ticket-${booking._id}.pdf`);
   };
 
   if (loading) {

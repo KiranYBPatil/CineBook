@@ -26,7 +26,7 @@ app.use(
 );
 
 // ✅ Handle ALL preflight requests
-app.options("*", cors());
+app.options("{*path}", cors());
 
 app.use(cookieParser());
 app.use(express.json());

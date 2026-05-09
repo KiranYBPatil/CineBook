@@ -1,0 +1,53 @@
+services:
+  # ─── MongoDB ───────────────────────────────────────
+  mongo:
+    image: mongo:7
+    container_name: cinebook-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - cinebook-network
+
+  # ─── Backend API ───────────────────────────────────
+  backend:
+    build:
+      context: ./bms-backend
+      dockerfile: Dockerfile
+    container_name: cinebook-backend
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+    env_file:
+      - ./bms-backend/.env
+    environment:
+      - MONGO_CONNECTION_STRING=mongodb://mongo:27017/bookmyscreen
+    depends_on:
+      - mongo
+    networks:
+      - cinebook-network
+
+  # ─── Frontend (Nginx) ─────────────────────────────
+  frontend:
+    build:
+      context: ./bms-frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_BACKEND_URL: http://localhost:9000/api/v1
+    container_name: cinebook-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - cinebook-network
+
+volumes:
+  mongo_data:
+
+networks:
+  cinebook-network:
+    driver: bridge

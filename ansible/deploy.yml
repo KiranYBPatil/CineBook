@@ -1,0 +1,141 @@
+---
+# ============================================
+# CineBook - Ansible Deployment Playbook
+# Deploys Docker containers to AWS EC2
+# ============================================
+
+- name: Deploy CineBook to AWS EC2
+  hosts: all
+  become: true
+
+  vars:
+    backend_image: "cinebook-backend:latest"
+    frontend_image: "cinebook-frontend:latest"
+    app_dir: /opt/cinebook
+    mongo_volume: cinebook_mongo_data
+
+  tasks:
+
+    # ─── 1. Install Docker (if not present) ──────────
+    - name: Install required system packages
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+        state: present
+        update_cache: yes
+
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+        state: present
+
+    - name: Install Docker Engine
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-compose-plugin
+        state: present
+        update_cache: yes
+
+    - name: Ensure Docker service is running
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    # ─── 2. Prepare Application Directory ────────────
+    - name: Create application directory
+      file:
+        path: "{{ app_dir }}"
+        state: directory
+        mode: "0755"
+
+    # ─── 3. Pull Latest Docker Images ────────────────
+    - name: Pull backend image
+      docker_image:
+        name: "{{ backend_image }}"
+        source: pull
+        force_source: yes
+
+    - name: Pull frontend image
+      docker_image:
+        name: "{{ frontend_image }}"
+        source: pull
+        force_source: yes
+
+    # ─── 4. Create Docker Network ────────────────────
+    - name: Create cinebook Docker network
+      docker_network:
+        name: cinebook-network
+        state: present
+
+    # ─── 5. Run MongoDB Container ────────────────────
+    - name: Run MongoDB container
+      docker_container:
+        name: cinebook-mongo
+        image: mongo:7
+        state: started
+        restart_policy: unless-stopped
+        networks:
+          - name: cinebook-network
+        volumes:
+          - "{{ mongo_volume }}:/data/db"
+        ports:
+          - "27017:27017"
+
+    # ─── 6. Run Backend Container ────────────────────
+    - name: Run Backend container
+      docker_container:
+        name: cinebook-backend
+        image: "{{ backend_image }}"
+        state: started
+        restart_policy: unless-stopped
+        recreate: yes
+        networks:
+          - name: cinebook-network
+        ports:
+          - "9000:9000"
+        env:
+          PORT: "9000"
+          MONGO_CONNECTION_STRING: "mongodb://cinebook-mongo:27017/bookmyscreen"
+          JWT_SECRET: "{{ lookup('env', 'JWT_SECRET') | default('cinebook_jwt_secret_prod', true) }}"
+          HASH_SECRET: "{{ lookup('env', 'HASH_SECRET') | default('cinebook_hash_secret_prod', true) }}"
+          FRONTEND_URL: "http://{{ ansible_host }}"
+
+    # ─── 7. Run Frontend Container ───────────────────
+    - name: Run Frontend container
+      docker_container:
+        name: cinebook-frontend
+        image: "{{ frontend_image }}"
+        state: started
+        restart_policy: unless-stopped
+        recreate: yes
+        networks:
+          - name: cinebook-network
+        ports:
+          - "80:80"
+
+    # ─── 8. Health Check ─────────────────────────────
+    - name: Wait for backend to be healthy
+      uri:
+        url: "http://localhost:9000/"
+        status_code: 200
+      register: health
+      until: health.status == 200
+      retries: 10
+      delay: 5
+
+    - name: Deployment complete
+      debug:
+        msg: "✅ CineBook deployed successfully! Frontend: http://{{ ansible_host }}, API: http://{{ ansible_host }}:9000"
