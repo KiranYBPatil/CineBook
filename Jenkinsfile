@@ -5,16 +5,29 @@ pipeline {
         nodejs 'NodeJS20'
     }
 
+    // ─── Environment Variables ────────────
+    environment {
+        EC2_IP       = '3.25.162.81'
+        EC2_USER     = 'ubuntu'
+        APP_DIR      = '/home/ubuntu/CineBook'
+        GITHUB_REPO  = 'https://github.com/KiranYBPatil/CineBook.git'
+    }
+
+    // ─── Auto-trigger on GitHub push ─────
+    triggers {
+        githubPush()
+    }
+
     stages {
 
-        // ─── Checkout ─────────────────────
+        // ─── 1. Checkout ─────────────────────
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
 
-        // ─── Backend Install ──────────────
+        // ─── 2. Backend Install ──────────────
         stage('Backend Install') {
             steps {
                 dir('bms-backend') {
@@ -23,7 +36,7 @@ pipeline {
             }
         }
 
-        // ─── Frontend Install ─────────────
+        // ─── 3. Frontend Install ─────────────
         stage('Frontend Install') {
             steps {
                 dir('bms-frontend') {
@@ -32,7 +45,7 @@ pipeline {
             }
         }
 
-        // ─── Backend Build ────────────────
+        // ─── 4. Backend Build ────────────────
         stage('Backend Build') {
             steps {
                 dir('bms-backend') {
@@ -41,7 +54,7 @@ pipeline {
             }
         }
 
-        // ─── Frontend Build ───────────────
+        // ─── 5. Frontend Build ───────────────
         stage('Frontend Build') {
             steps {
                 dir('bms-frontend') {
@@ -50,7 +63,7 @@ pipeline {
             }
         }
 
-        // ─── Docker Backend Build ─────────
+        // ─── 6. Docker Backend Build ─────────
         stage('Docker Backend Build') {
             steps {
                 dir('bms-backend') {
@@ -59,7 +72,7 @@ pipeline {
             }
         }
 
-        // ─── Docker Frontend Build ────────
+        // ─── 7. Docker Frontend Build ────────
         stage('Docker Frontend Build') {
             steps {
                 dir('bms-frontend') {
@@ -68,21 +81,73 @@ pipeline {
             }
         }
 
-        // ─── Docker Check ─────────────────
+        // ─── 8. Docker Check ─────────────────
         stage('Docker Images') {
             steps {
                 bat 'docker images'
+            }
+        }
+
+        // ─── 9. Deploy to AWS EC2 ────────────
+        stage('Deploy to EC2') {
+            steps {
+                echo "🚀 Deploying to EC2 at ${EC2_IP}..."
+                withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER')]) {
+                    bat """
+                        ssh -o StrictHostKeyChecking=no -i "%SSH_KEY%" %SSH_USER%@${EC2_IP} ^
+                        "cd ${APP_DIR} && ^
+                         git pull origin main && ^
+                         if [ ! -f bms-backend/.env ]; then ^
+                           echo 'Creating .env file...' && ^
+                           printf 'PORT=9000\\nMONGO_CONNECTION_STRING=mongodb://mongo:27017/bookmyscreen\\nJWT_SECRET=cinebook_jwt_secret_2026\\nACCESS_TOKEN_SECRET=cinebook_access_token_secret_2026\\nREFRESH_TOKEN_SECRET=cinebook_refresh_token_secret_2026\\nHASH_SECRET=cinebook_hash_secret_2026\\nFRONTEND_URL=http://${EC2_IP}\\nNODEMAILER_EMAIL=\\nNODEMAILER_PASSWORD=\\n' > bms-backend/.env; ^
+                         fi && ^
+                         docker compose up -d --build && ^
+                         echo '✅ Containers rebuilt and started!'"
+                    """
+                }
+            }
+        }
+
+        // ─── 10. Health Check ────────────────
+        stage('Verify Deployment') {
+            steps {
+                echo '🏥 Running health check...'
+                bat """
+                    @echo off
+                    setlocal
+                    set RETRIES=0
+                    :LOOP
+                    set /a RETRIES+=1
+                    if %RETRIES% GTR 12 (
+                        echo ❌ Health check failed after 12 attempts!
+                        exit /b 1
+                    )
+                    echo Attempt %RETRIES%/12 - Checking http://${EC2_IP}/api/v1/movies ...
+                    curl -s -o nul -w "%%{http_code}" http://${EC2_IP}/api/v1/movies | findstr "200" >nul
+                    if errorlevel 1 (
+                        echo Waiting 10 seconds...
+                        timeout /t 10 /nobreak >nul
+                        goto LOOP
+                    )
+                    echo ✅ Backend is healthy!
+                """
             }
         }
     }
 
     post {
         success {
-            echo 'Pipeline completed successfully!'
+            echo """
+            ════════════════════════════════════════════
+            ✅ PIPELINE SUCCESS — CineBook Deployed!
+            🌐 Frontend:  http://${EC2_IP}
+            🔧 API:       http://${EC2_IP}/api/v1
+            ════════════════════════════════════════════
+            """
         }
 
         failure {
-            echo 'Pipeline failed!'
+            echo '❌ Pipeline FAILED! Check the logs above.'
         }
     }
 }

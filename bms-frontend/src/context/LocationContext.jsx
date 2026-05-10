@@ -8,7 +8,8 @@ export const LocationProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchLocationData = async (latitude, longitude) => {
+    // ─── Method 1: Browser Geolocation → OpenStreetMap reverse geocode ───
+    const fetchLocationFromCoords = async (latitude, longitude) => {
       try {
         const res = await fetch(
           `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
@@ -17,28 +18,44 @@ export const LocationProvider = ({ children }) => {
         const userLocation = data?.address?.state || null;
         setLocation(userLocation);
       } catch (err) {
-        setError("Failed to fetch location data");
+        // If reverse geocoding fails, try IP-based fallback
+        await fetchLocationFromIP();
       } finally {
         setLoading(false);
       }
     };
 
-    if (!navigator.geolocation) {
-      setError("Geolocation is not supported by your browser");
-      setLoading(false);
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        fetchLocationData(latitude, longitude);
-      },
-      () => {
-        setError("Unable to retrieve your location");
+    // ─── Method 2: IP-based geolocation (works on HTTP, no permission needed) ───
+    const fetchLocationFromIP = async () => {
+      try {
+        const res = await fetch("https://ipapi.co/json/");
+        const data = await res.json();
+        const userLocation = data?.region || data?.city || null;
+        setLocation(userLocation);
+      } catch (err) {
+        setError("Failed to detect location");
+      } finally {
         setLoading(false);
       }
-    );
+    };
+
+    // Geolocation API requires HTTPS (secure context).
+    // On plain HTTP deployments, navigator.geolocation is undefined in Chrome.
+    if (navigator.geolocation && window.isSecureContext) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          fetchLocationFromCoords(latitude, longitude);
+        },
+        () => {
+          // Permission denied or error → fall back to IP
+          fetchLocationFromIP();
+        }
+      );
+    } else {
+      // Not HTTPS or geolocation not supported → use IP-based location
+      fetchLocationFromIP();
+    }
   }, []);
 
   return (
@@ -48,4 +65,4 @@ export const LocationProvider = ({ children }) => {
   );
 };
 
-export const useLocation = () => useContext(LocationContext);
+export const useLocation = () => useContext(LocationContext);

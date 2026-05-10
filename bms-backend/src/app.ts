@@ -21,9 +21,12 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: (origin, callback) => {
+      console.log("CORS Origin request:", origin);
+      console.log("Allowed Origins:", allowedOrigins);
       if (!origin) return callback(null, true); // Postman / server-to-server
       if (allowedOrigins.includes(origin)) return callback(null, true);
       if (origin.endsWith(".onrender.com")) return callback(null, true);
+      console.log("CORS Rejected:", origin);
       return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,

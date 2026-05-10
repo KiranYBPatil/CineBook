@@ -4,8 +4,8 @@ services:
     image: mongo:7
     container_name: cinebook-mongo
     restart: unless-stopped
-    ports:
-      - "27017:27017"
+    expose:
+      - "27017"
     volumes:
       - mongo_data:/data/db
     networks:
@@ -18,8 +18,8 @@ services:
       dockerfile: Dockerfile
     container_name: cinebook-backend
     restart: unless-stopped
-    ports:
-      - "9000:9000"
+    expose:
+      - "9000"
     env_file:
       - ./bms-backend/.env
     environment:
@@ -35,7 +35,7 @@ services:
       context: ./bms-frontend
       dockerfile: Dockerfile
       args:
-        VITE_BACKEND_URL: ${VITE_BACKEND_URL:-http://localhost:9000/api/v1}
+        VITE_BACKEND_URL: ${VITE_BACKEND_URL:-/api/v1}
     container_name: cinebook-frontend
     restart: unless-stopped
     ports:

@@ -103,7 +103,7 @@
 
     # ─── 6. Build & Start containers ─────────────────
     - name: Build and start containers
-      shell: VITE_BACKEND_URL=http://{{ ec2_ip }}:9000/api/v1 docker compose up -d --build
+      shell: docker compose up -d --build
       args:
         chdir: "{{ app_dir }}"
       become_user: ubuntu
@@ -111,7 +111,7 @@
     # ─── 7. Health Check ──────────────────────────────
     - name: Wait for backend to be healthy
       uri:
-        url: "http://localhost:9000/"
+        url: "http://localhost/api/v1/movies"
         status_code: 200
       register: health
       until: health.status == 200
@@ -121,4 +121,4 @@
     # ─── 8. Done ──────────────────────────────────────
     - name: Deployment complete
       debug:
-        msg: "✅ CineBook deployed! Frontend: http://{{ ec2_ip }}  API: http://{{ ec2_ip }}:9000"
+        msg: "✅ CineBook deployed! Frontend: http://{{ ec2_ip }}  API: http://{{ ec2_ip }}/api/v1"
