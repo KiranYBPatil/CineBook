@@ -100,7 +100,7 @@ pipeline {
                     bat "ssh -o StrictHostKeyChecking=no -i \"%SSH_KEY%\" %SSH_USER%@${EC2_IP} \"cd ${APP_DIR} && git pull origin main\""
 
                     // Run deploy script (handles .env, swap, docker build)
-                    bat "ssh -o StrictHostKeyChecking=no -i \"%SSH_KEY%\" %SSH_USER%@${EC2_IP} \"bash ${APP_DIR}/scripts/deploy.sh\""
+                    bat "ssh -o StrictHostKeyChecking=no -i \"%SSH_KEY%\" %SSH_USER%@${EC2_IP} \"bash ${APP_DIR}/scripts/deploy.sh ${EC2_IP}\""
                 }
             }
         }
