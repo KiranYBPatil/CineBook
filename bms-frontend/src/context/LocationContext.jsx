@@ -26,17 +26,30 @@ export const LocationProvider = ({ children }) => {
     };
 
     // ─── Method 2: IP-based geolocation (works on HTTP, no permission needed) ───
+    // Try multiple services in case one blocks cloud/EC2 IPs
     const fetchLocationFromIP = async () => {
-      try {
-        const res = await fetch("https://ipapi.co/json/");
-        const data = await res.json();
-        const userLocation = data?.region || data?.city || null;
-        setLocation(userLocation);
-      } catch (err) {
-        setError("Failed to detect location");
-      } finally {
-        setLoading(false);
+      const services = [
+        { url: "http://ip-api.com/json/", extract: (d) => d?.regionName || d?.city },
+        { url: "https://ipapi.co/json/", extract: (d) => d?.region || d?.city },
+        { url: "https://ipinfo.io/json", extract: (d) => d?.region || d?.city },
+      ];
+
+      for (const svc of services) {
+        try {
+          const res = await fetch(svc.url);
+          const data = await res.json();
+          const userLocation = svc.extract(data);
+          if (userLocation) {
+            setLocation(userLocation);
+            setLoading(false);
+            return;
+          }
+        } catch {
+          // Try next service
+        }
       }
+      setError("Failed to detect location");
+      setLoading(false);
     };
 
     // Geolocation API requires HTTPS (secure context).
