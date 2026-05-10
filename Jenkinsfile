@@ -93,8 +93,8 @@ pipeline {
             steps {
                 echo "🚀 Deploying to EC2 at ${EC2_IP}..."
                 withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER')]) {
-                    // Fix Windows SSH key permissions
-                    bat "icacls \"%SSH_KEY%\" /inheritance:r /grant:r \"%USERNAME%:(R)\""
+                    // Fix Windows SSH key permissions (Jenkins runs as SYSTEM)
+                    bat "icacls \"%SSH_KEY%\" /inheritance:r /grant:r \"SYSTEM:(R)\" /grant:r \"Administrators:(R)\""
 
                     // Pull latest code
                     bat "ssh -o StrictHostKeyChecking=no -i \"%SSH_KEY%\" %SSH_USER%@${EC2_IP} \"cd ${APP_DIR} && git pull origin main\""
