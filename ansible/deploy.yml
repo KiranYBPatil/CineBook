@@ -10,7 +10,7 @@
 
   vars:
     app_dir: /home/ubuntu/CineBook
-    ec2_ip: "3.25.162.81"
+    ec2_ip: "3.27.249.93"
 
   tasks:
 
