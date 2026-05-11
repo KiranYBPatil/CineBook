@@ -2,19 +2,22 @@
 # ============================================
 # CineBook - Ansible Deployment Playbook
 # Deploys Docker containers to AWS EC2
+# Runs LOCALLY on EC2 (triggered by Jenkins via SSH)
 # ============================================
 
 - name: Deploy CineBook to AWS EC2
-  hosts: all
+  hosts: localhost
+  connection: local
   become: true
 
   vars:
     app_dir: /home/ubuntu/CineBook
-    ec2_ip: "3.27.249.93"
+    github_repo: https://github.com/KiranYBPatil/CineBook.git
+    ec2_ip: "{{ lookup('pipe', 'curl -s -m 5 http://169.254.169.254/latest/meta-data/public-ipv4 2>/dev/null') | default('32.236.37.142', true) }}"
 
   tasks:
 
-    # ─── 1. Install Dependencies ──────────────────────
+    # ─── 1. Install System Dependencies ────────────────
     - name: Install required system packages
       apt:
         name:
@@ -26,7 +29,7 @@
         state: present
         update_cache: yes
 
-    # ─── 2. Install Docker ────────────────────────────
+    # ─── 2. Install Docker ─────────────────────────────
     - name: Create keyrings directory
       file:
         path: /etc/apt/keyrings
@@ -67,16 +70,36 @@
         groups: docker
         append: yes
 
-    # ─── 3. Clone / Update Repo ───────────────────────
+    # ─── 3. Setup Swap Space ───────────────────────────
+    - name: Create swap file if not present
+      shell: |
+        if [ ! -f /swapfile ]; then
+          fallocate -l 2G /swapfile
+          chmod 600 /swapfile
+          mkswap /swapfile
+          swapon /swapfile
+          echo "Created 2GB swap"
+        else
+          swapon /swapfile 2>/dev/null || true
+          echo "Swap already exists"
+        fi
+      register: swap_result
+      changed_when: "'Created' in swap_result.stdout"
+
+    - name: Show swap status
+      debug:
+        msg: "{{ swap_result.stdout }}"
+
+    # ─── 4. Clone / Update Repository ──────────────────
     - name: Clone CineBook repository
       git:
-        repo: https://github.com/KiranYBPatil/CineBook.git
+        repo: "{{ github_repo }}"
         dest: "{{ app_dir }}"
         version: main
         force: yes
       become_user: ubuntu
 
-    # ─── 4. Create .env file ──────────────────────────
+    # ─── 5. Create Backend .env File ───────────────────
     - name: Create backend .env file
       copy:
         dest: "{{ app_dir }}/bms-backend/.env"
@@ -93,7 +116,11 @@
         owner: ubuntu
         mode: "0600"
 
-    # ─── 5. Stop existing containers ─────────────────
+    - name: Show detected EC2 IP
+      debug:
+        msg: "FRONTEND_URL set to http://{{ ec2_ip }}"
+
+    # ─── 6. Stop Existing Containers ───────────────────
     - name: Stop existing containers
       shell: docker compose down --remove-orphans
       args:
@@ -101,14 +128,16 @@
       become_user: ubuntu
       ignore_errors: yes
 
-    # ─── 6. Build & Start containers ─────────────────
+    # ─── 7. Build & Start Containers ───────────────────
     - name: Build and start containers
       shell: docker compose up -d --build
       args:
         chdir: "{{ app_dir }}"
       become_user: ubuntu
+      environment:
+        VITE_BACKEND_URL: "/api/v1"
 
-    # ─── 7. Health Check ──────────────────────────────
+    # ─── 8. Health Check ───────────────────────────────
     - name: Wait for backend to be healthy
       uri:
         url: "http://localhost/api/v1/movies"
@@ -118,7 +147,12 @@
       retries: 15
       delay: 10
 
-    # ─── 8. Done ──────────────────────────────────────
+    # ─── 9. Deployment Complete ────────────────────────
     - name: Deployment complete
       debug:
-        msg: "✅ CineBook deployed! Frontend: http://{{ ec2_ip }}  API: http://{{ ec2_ip }}/api/v1"
+        msg: |
+          ════════════════════════════════════════
+          ✅ CineBook Deployed via Ansible!
+          🌐 Frontend: http://{{ ec2_ip }}
+          🔧 API:      http://{{ ec2_ip }}/api/v1
+          ════════════════════════════════════════
