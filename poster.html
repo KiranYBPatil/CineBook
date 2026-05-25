@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CineBook DevOps Poster</title>
+  <!-- Import Premium Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&family=Fira+Code:wght@400;500&family=Black+Ops+One&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ─── CSS Reset & Base Variables ──────────── */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    :root {
+      --primary-color: #0F1C3F;       /* Deep Imperial Navy */
+      --secondary-color: #1E3A8A;     /* Bright Navy */
+      --accent-color: #F59E0B;        /* Gold / Amber */
+      --bg-color: #F8FAFC;            /* Clean light slate background */
+      --card-bg: #FFFFFF;             /* Pure white card backgrounds */
+      --text-dark: #0F172A;           /* Dark slate for high contrast readability */
+      --text-light: #475569;          /* Medium slate for secondary text */
+      --border-navy: #0F1C3F;         /* Theme border color */
+      --success-green: #10B981;       /* Success validation green */
+      --light-blue-bg: #EFF6FF;       /* Soft light blue panel background */
+      --terminal-bg: #0B132B;         /* Terminal dark background */
+      --terminal-text: #38BDF8;       /* Terminal sky blue text */
+    }
+
+    @page {
+      size: 24in 36in;
+      margin: 0;
+    }
+
+    @media print {
+      body {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-dark);
+      width: 24in;
+      height: 36in;
+      padding: 0.4in;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ─── Header Section ───────────────────────── */
+    header {
+      background: var(--card-bg);
+      border: 4px solid var(--border-navy);
+      border-radius: 12px;
+      height: 2.6in;
+      padding: 0.2in 0.4in;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 10px 25px rgba(15, 28, 63, 0.08);
+      margin-bottom: 0.3in;
+    }
+
+    .header-logo-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 2.4in;
+    }
+
+    .devops-badge {
+      font-family: 'Outfit', sans-serif;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      font-weight: 800;
+      font-size: 36px;
+      padding: 12px 25px;
+      border-radius: 50px;
+      border: 3px solid var(--accent-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      letter-spacing: 2px;
+    }
+
+    .badge-sub {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--accent-color);
+      margin-top: 10px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+    }
+
+    .header-title-container {
+      text-align: center;
+      flex: 1;
+      padding: 0 0.3in;
+    }
+
+    .header-title-container h1 {
+      font-family: 'Black Ops One', 'Outfit', sans-serif;
+      font-weight: 400;
+      font-size: 40px;
+      color: var(--primary-color);
+      line-height: 1.15;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .header-title-container h2 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 24px;
+      color: var(--secondary-color);
+      margin-top: 10px;
+      letter-spacing: 1px;
+    }
+
+    .header-authors-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin-top: 15px;
+      background: var(--light-blue-bg);
+      padding: 8px 18px;
+      border-radius: 8px;
+      border: 1px solid rgba(30, 58, 138, 0.1);
+    }
+
+    .author-info {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--primary-color);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .author-info span.id {
+      font-weight: 400;
+      color: var(--text-light);
+      font-size: 13px;
+    }
+
+    .guide-info {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary-color);
+      border-left: 3px solid var(--accent-color);
+      padding-left: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 2.8in;
+    }
+
+    .header-logos-right {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      width: 2.8in;
+      justify-content: flex-end;
+    }
+
+    .tech-logo-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .tech-logo-icon {
+      height: 70px;
+      object-fit: contain;
+    }
+
+    .tech-logo-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-light);
+    }
+
+    /* ─── Main Grid Layout ─────────────────────── */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 6.6in 16.2in;
+      grid-gap: 0.4in;
+      flex: 1;
+      height: 30.7in;
+    }
+
+    /* Left Column containing Sections 1-5 */
+    .left-column {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+    }
+
+    /* Right Column containing Sections 6-14 */
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+    }
+
+    /* ─── Card Design (Sections) ───────────────── */
+    .section-card {
+      background: var(--card-bg);
+      border: 3px solid var(--border-navy);
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 15px rgba(15, 28, 63, 0.04);
+    }
+
+    .card-header {
+      background: var(--primary-color);
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 24px;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 3px solid var(--border-navy);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .card-header span.num {
+      color: var(--accent-color);
+      font-weight: 800;
+      border-right: 2px solid rgba(255, 255, 255, 0.3);
+      padding-right: 10px;
+    }
+
+    .card-body {
+      padding: 20px;
+      flex: 1;
+      font-size: 17px;
+      line-height: 1.5;
+      color: var(--text-dark);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* Typography & Spacers */
+    p {
+      margin-bottom: 12px;
+      text-align: justify;
+    }
+    
+    p:last-child {
+      margin-bottom: 0;
+    }
+
+    ul {
+      list-style-type: none;
+    }
+
+    li {
+      margin-bottom: 10px;
+      position: relative;
+      padding-left: 25px;
+      text-align: justify;
+    }
+
+    li:last-child {
+      margin-bottom: 0;
+    }
+
+    li::before {
+      content: "➔";
+      color: var(--accent-color);
+      position: absolute;
+      left: 0;
+      font-weight: bold;
+    }
+
+    li.check::before {
+      content: "✔";
+      color: var(--success-green);
+    }
+
+    .bold-tag {
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+
+    /* ─── Specific Layout Controls & Tweaks ────── */
+    
+    /* Left column section Heights to distribute nicely */
+    .sec-background { height: 4.4in; }
+    .sec-problem { height: 4.4in; }
+    .sec-objectives { height: 6.8in; }
+    .sec-specs { height: 6.8in; }
+    .sec-functional { height: 6.3in; }
+
+    /* Right column content arrangements */
+    .row-flex {
+      display: flex;
+      gap: 0.4in;
+    }
+
+    .sec-architecture { height: 5.8in; }
+    
+    .sec-workflow { width: 7.9in; height: 7.2in; }
+    .sec-tools { width: 7.9in; height: 7.2in; }
+
+    .tools-grid-3col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .sec-uml { width: 7.9in; height: 6.0in; }
+    .sec-testing { width: 7.9in; height: 6.0in; }
+
+    .sec-results { height: 6.2in; }
+
+    .sec-advantages { width: 5.1in; height: 4.3in; }
+    .sec-future { width: 5.1in; height: 4.3in; }
+    .sec-conclusion { width: 5.2in; height: 4.3in; }
+
+    /* System Architecture / Diagrams */
+    .diagram-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+      background: var(--light-blue-bg);
+      border-radius: 8px;
+      border: 1px dashed var(--secondary-color);
+      padding: 10px;
+      overflow: hidden;
+    }
+
+    .diagram-image {
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+      border-radius: 6px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    /* System Architecture flow style */
+    .arch-flow-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 10px 0;
+    }
+
+    .flow-step {
+      background: var(--card-bg);
+      border: 2px solid var(--border-navy);
+      border-radius: 8px;
+      padding: 12px 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.03);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      min-height: 140px;
+      width: 1.8in;
+      flex-shrink: 0;
+    }
+
+    .flow-icon {
+      font-size: 26px;
+      background: var(--light-blue-bg);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--secondary-color);
+      border: 1px solid rgba(30, 58, 138, 0.2);
+    }
+
+    .flow-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+
+    .flow-desc {
+      font-size: 12px;
+      color: var(--text-light);
+      line-height: 1.3;
+    }
+
+    .flow-connector {
+      font-size: 28px;
+      color: var(--accent-color);
+      font-weight: 800;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    /* Tools list grid */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .tool-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      background: var(--bg-color);
+      padding: 12px 15px;
+      border-radius: 8px;
+      border: 1px solid rgba(15, 28, 63, 0.1);
+    }
+
+    .tool-icon-box {
+      font-size: 26px;
+      width: 50px;
+      height: 50px;
+      background: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--border-navy);
+      color: var(--primary-color);
+    }
+
+    .tool-text {
+      flex: 1;
+    }
+
+    .tool-name {
+      font-weight: 700;
+      color: var(--primary-color);
+      font-size: 16px;
+      margin-bottom: 2px;
+    }
+
+    .tool-desc {
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.3;
+    }
+
+    /* DevOps workflow list */
+    .workflow-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .workflow-node {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      position: relative;
+    }
+
+    .workflow-num {
+      width: 36px;
+      height: 36px;
+      background: var(--primary-color);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+      border: 2px solid var(--accent-color);
+      flex-shrink: 0;
+      z-index: 2;
+    }
+
+    .workflow-node::after {
+      content: "";
+      position: absolute;
+      left: 17px;
+      top: 36px;
+      width: 3px;
+      height: calc(100% + 15px - 36px);
+      background: var(--primary-color);
+      opacity: 0.3;
+      z-index: 1;
+    }
+
+    .workflow-node:last-child::after {
+      display: none;
+    }
+
+    .workflow-content {
+      background: var(--bg-color);
+      border-radius: 8px;
+      padding: 12px 18px;
+      border: 1px solid rgba(15, 28, 63, 0.08);
+      flex: 1;
+    }
+
+    .workflow-title {
+      font-weight: 700;
+      color: var(--primary-color);
+      font-size: 16px;
+      margin-bottom: 3px;
+    }
+
+    .workflow-desc {
+      font-size: 14px;
+      color: var(--text-light);
+      line-height: 1.4;
+    }
+
+    /* Testing Table */
+    .test-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 5px;
+      font-size: 14px;
+    }
+
+    .test-table th, .test-table td {
+      border: 1px solid rgba(15, 28, 63, 0.2);
+      padding: 10px 12px;
+      text-align: left;
+    }
+
+    .test-table th {
+      background: var(--primary-color);
+      color: white;
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .test-table tr:nth-child(even) {
+      background: var(--bg-color);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 12px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .status-badge.pass {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success-green);
+      border: 1px solid var(--success-green);
+    }
+
+    /* Results/Snapshots grid */
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+      height: 100%;
+    }
+
+    .result-item {
+      background: var(--bg-color);
+      border: 2px solid var(--border-navy);
+      border-radius: 8px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      height: 100%;
+    }
+
+    .result-title {
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--primary-color);
+      border-bottom: 2px solid rgba(15, 28, 63, 0.1);
+      padding-bottom: 8px;
+      text-align: center;
+    }
+
+    .result-visual {
+      flex: 1;
+      background: var(--terminal-bg);
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .terminal-header {
+      background: rgba(255,255,255,0.05);
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .terminal-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .td-red { background: #EF4444; }
+    .td-yellow { background: #F59E0B; }
+    .td-green { background: #10B981; }
+
+    .terminal-title {
+      font-size: 11px;
+      color: rgba(255,255,255,0.4);
+      font-family: 'Fira Code', monospace;
+      margin-left: 5px;
+    }
+
+    .terminal-content {
+      padding: 12px;
+      font-family: 'Fira Code', monospace;
+      font-size: 11px;
+      color: #E2E8F0;
+      line-height: 1.4;
+      white-space: pre-wrap;
+      overflow: hidden;
+      flex: 1;
+    }
+
+    .green-text { color: #4ADE80; }
+    .yellow-text { color: #FBBF24; }
+    .blue-text { color: #38BDF8; }
+
+    /* ─── Footer Section ───────────────────────── */
+    footer {
+      background: var(--primary-color);
+      color: white;
+      height: 80px;
+      border-radius: 8px;
+      border: 3px solid var(--border-navy);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
+    }
+
+    .footer-left {
+      font-weight: 600;
+      font-size: 20px;
+    }
+
+    .footer-center {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 26px;
+      color: var(--accent-color);
+      letter-spacing: 2px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .footer-center::before, .footer-center::after {
+      content: "⚙";
+      font-size: 32px;
+      animation: spin 8s linear infinite;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    .footer-right {
+      font-weight: 500;
+      font-size: 18px;
+      color: rgba(255,255,255,0.7);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── HEADER BANNER ─── -->
+  <header>
+    <div class="header-logo-left">
+      <div class="devops-badge">
+        DEV<span>∞</span>OPS
+      </div>
+      <div class="badge-sub">COLLABORATE & DEPLOY</div>
+    </div>
+
+    <div class="header-title-container">
+      <h1>Cloud-Native Movie Ticket Booking System with Automated CI/CD Pipeline Using Docker, Jenkins, and AWS</h1>
+      <h2>A DevOps Project</h2>
+      
+      <div class="header-authors-grid">
+        <div class="author-info">
+          <span>Rishyab Huded</span>
+          <span class="id">02FE23BCS077</span>
+        </div>
+        <div class="author-info">
+          <span>Amey Bidikar</span>
+          <span class="id">02FE22BCS014</span>
+        </div>
+        <div class="author-info">
+          <span>Sagar Suntakar</span>
+          <span class="id">02FE24BCS405</span>
+        </div>
+        <div class="author-info">
+          <span>Kiran BPatil</span>
+          <span class="id">02FE23BCS129</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="guide-info">
+      <span>Project Advisor:</span>
+      <span style="font-size: 20px; font-weight: 800; margin-top: 5px;">Priyanka Gavade</span>
+      <span style="font-size: 14px; font-weight: 500; color: var(--text-light); margin-top: 2px;">Department of Computer Science</span>
+    </div>
+  </header>
+
+  <!-- ─── MAIN POSTER BODY ─── -->
+  <div class="main-grid">
+    
+    <!-- LEFT COLUMN (1/3 Width) -->
+    <div class="left-column">
+      
+      <!-- 1. BACKGROUND -->
+      <div class="section-card sec-background">
+        <div class="card-header">
+          <span class="num">01</span> BACKGROUND
+        </div>
+        <div class="card-body">
+          <p>
+            <span class="bold-tag">CineBook</span> (BookMyScreen) is a high-performance full-stack web application designed for theater ticket reservations. Built on the <span class="bold-tag">MERN stack</span> (React.js, Node.js, Express, MongoDB), the application features concurrent seat locking, user authentication, and responsive seat layouts. 
+          </p>
+          <p>
+            To operationalize the application, DevOps practices were introduced to automate the manual software release cycle. An automated pipeline handles builds, environment variable configuration, dockerization, Ansible deployments, and server health monitoring.
+          </p>
+        </div>
+      </div>
+
+      <!-- 2. PROBLEM STATEMENT -->
+      <div class="section-card sec-problem">
+        <div class="card-header">
+          <span class="num">02</span> PROBLEM STATEMENT
+        </div>
+        <div class="card-body">
+          <p>
+            Manual deployment of multi-tier web applications leads to:
+          </p>
+          <ul>
+            <li><span class="bold-tag">Environment Drift</span>: Mismatched Node.js/package versions between local development and AWS EC2 servers.</li>
+            <li><span class="bold-tag">Security Exposures</span>: Manually writing .env files or exposing production database credentials inside repositories.</li>
+            <li><span class="bold-tag">Release Downtime</span>: Manual server updates cause application service disruptions.</li>
+            <li><span class="bold-tag">Monitoring Deficits</span>: No instant alerts or metrics for service failures.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 3. OBJECTIVES -->
+      <div class="section-card sec-objectives">
+        <div class="card-header">
+          <span class="num">03</span> OBJECTIVES
+        </div>
+        <div class="card-body">
+          <ul>
+            <li><span class="bold-tag">Automate Pipeline</span>: Establish a Jenkins CI/CD pipeline triggered automatically via Git hooks upon code changes.</li>
+            <li><span class="bold-tag">Enforce Containerization</span>: Package Frontend (React/Nginx), Backend (Node), and MongoDB into distinct Docker containers.</li>
+            <li><span class="bold-tag">Define Configuration-as-Code</span>: Use Ansible to automate server provisioning, dependency installation, and swap file settings.</li>
+            <li><span class="bold-tag">Implement Zero-Downtime Deployment</span>: Configure Nginx reverse proxy routes with automatic health verification loops.</li>
+            <li><span class="bold-tag">Establish Monitoring & Rollback</span>: Deploy health check scripts to confirm backend responsiveness and support rapid rollbacks.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 4. REQUIREMENT SPECIFICATIONS -->
+      <div class="section-card sec-specs">
+        <div class="card-header">
+          <span class="num">04</span> REQUIREMENT SPECIFICATIONS
+        </div>
+        <div class="card-body">
+          <p style="margin-bottom: 10px; font-weight: 700; color: var(--primary-color);">HARDWARE CONFIGURATION:</p>
+          <ul style="margin-bottom: 20px;">
+            <li><span class="bold-tag">AWS EC2 Server</span>: c7i-flex.large Instance (2 vCPUs with 1 core each, 4GB RAM).</li>
+            <li><span class="bold-tag">Storage & Network</span>: 20GB General Purpose SSD (gp3); 1Gbps Bandwidth.</li>
+            <li><span class="bold-tag">Virtual Swap File</span>: 2GB Configured Swap for npm build compilation stability.</li>
+          </ul>
+          
+          <p style="margin-bottom: 10px; font-weight: 700; color: var(--primary-color);">SOFTWARE DEPLOYMENT MATRIX:</p>
+          <ul>
+            <li><span class="bold-tag">Operating System</span>: Ubuntu Server 22.04 LTS (HVM).</li>
+            <li><span class="bold-tag">CI/CD & Provisioning</span>: Jenkins LTS v2.440+, Ansible Core v2.12+.</li>
+            <li><span class="bold-tag">Container System</span>: Docker Engine v24.0.7+, Docker Compose v2.22.0+.</li>
+            <li><span class="bold-tag">Server Runtimes</span>: Node.js v20.x, Nginx stable-alpine, MongoDB v7.0.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 5. FUNCTIONAL REQUIREMENTS -->
+      <div class="section-card sec-functional">
+        <div class="card-header">
+          <span class="num">05</span> FUNCTIONAL REQUIREMENTS
+        </div>
+        <div class="card-body">
+          <ul>
+            <li><span class="bold-tag">Auto-Checkout & Build</span>: Detect GitHub commits via Jenkins polling (every 2 mins), checkout, and run test suites.</li>
+            <li><span class="bold-tag">Secrets Configuration</span>: Inject environment variables (.env files) on target servers without storing them in Git.</li>
+            <li><span class="bold-tag">Container Orchestration</span>: Docker Compose manages private networking between containers, avoiding host port clutter.</li>
+            <li><span class="bold-tag">Reverse Proxy Proxying</span>: Nginx routes traffic securely on Port 80, routing `/api/v1` calls to the Node container.</li>
+            <li><span class="bold-tag">Deployment Health Verification</span>: Script polls API endpoints (12 attempts) before declaring build success.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN (2/3 Width) -->
+    <div class="right-column">
+      
+      <!-- 6. SYSTEM ARCHITECTURE -->
+      <div class="section-card sec-architecture">
+        <div class="card-header">
+          <span class="num">06</span> SYSTEM ARCHITECTURE
+        </div>
+        <div class="card-body" style="padding: 15px;">
+          <!-- Custom Flow Diagram representing Jenkins + Ansible + Docker + EC2 Flow -->
+          <div class="arch-flow-grid">
+            <div class="flow-step">
+              <div class="flow-icon">💻</div>
+              <div class="flow-label">Developer</div>
+              <div class="flow-desc">Pushes code to GitHub</div>
+            </div>
+            <div class="flow-connector">➔</div>
+            <div class="flow-step">
+              <div class="flow-icon">🐙</div>
+              <div class="flow-label">GitHub Repo</div>
+              <div class="flow-desc">Webhooks notify CI/CD</div>
+            </div>
+            <div class="flow-connector">➔</div>
+            <div class="flow-step">
+              <div class="flow-icon">🕵️‍♂️</div>
+              <div class="flow-label">Jenkins CI/CD</div>
+              <div class="flow-desc">Builds & tests source</div>
+            </div>
+            <div class="flow-connector">➔</div>
+            <div class="flow-step">
+              <div class="flow-icon">🐳</div>
+              <div class="flow-label">Docker Build</div>
+              <div class="flow-desc">Builds container images</div>
+            </div>
+            <div class="flow-connector">➔</div>
+            <div class="flow-step">
+              <div class="flow-icon">☸️</div>
+              <div class="flow-label">Kubernetes</div>
+              <div class="flow-desc">Orchestrates & deploys pods</div>
+            </div>
+            <div class="flow-connector">➔</div>
+            <div class="flow-step">
+              <div class="flow-icon">☁️</div>
+              <div class="flow-label">AWS EC2</div>
+              <div class="flow-desc">Hosts the K8s cluster</div>
+            </div>
+            <div class="flow-connector">➔</div>
+            <div class="flow-step">
+              <div class="flow-icon">📊</div>
+              <div class="flow-label">Prometheus + Grafana</div>
+              <div class="flow-desc">Monitors & visualizes metrics</div>
+            </div>
+          </div>
+          
+          <div style="text-align: center; margin-top: 10px; font-weight: 600; font-size: 14px; color: var(--text-light);">
+            Figure 6.1: Automated CI/CD Lifecycle showing continuous integration, provisioning orchestration, container orchestration, and production monitoring.
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW: 7. DEVOPS WORKFLOW & 8. TOOLS & TECHNOLOGIES -->
+      <div class="row-flex">
+        
+        <!-- 7. DEVOPS WORKFLOW -->
+        <div class="section-card sec-workflow">
+          <div class="card-header">
+            <span class="num">07</span> DEVOPS WORKFLOW
+          </div>
+          <div class="card-body">
+            <div class="workflow-timeline">
+              
+              <div class="workflow-node">
+                <div class="workflow-num">1</div>
+                <div class="workflow-content">
+                  <div class="workflow-title">Code Commits & Webhook Trigger</div>
+                  <div class="workflow-desc">Developers collaborate on feature branches. On merging into main branch, Jenkins triggers build stage.</div>
+                </div>
+              </div>
+              
+              <div class="workflow-node">
+                <div class="workflow-num">2</div>
+                <div class="workflow-content">
+                  <div class="workflow-title">Multi-tier Dependency Resolution</div>
+                  <div class="workflow-desc">Jenkins server executes 'NPM Install' in subfolders to compile TypeScript and create optimized React assets.</div>
+                </div>
+              </div>
+              
+              <div class="workflow-node">
+                <div class="workflow-num">3</div>
+                <div class="workflow-content">
+                  <div class="workflow-title">Ansible Playbook Invocation</div>
+                  <div class="workflow-desc">Jenkins safely logs into AWS EC2 over SSH using credentials and triggers localized Ansible playbook `deploy.yml`.</div>
+                </div>
+              </div>
+
+              <div class="workflow-node">
+                <div class="workflow-num">4</div>
+                <div class="workflow-content">
+                  <div class="workflow-title">Host Configuration & Swap Tuning</div>
+                  <div class="workflow-desc">Ansible checks if Docker is installed. It configures a 2GB virtual swap file to prevent memory exhaustion during builds.</div>
+                </div>
+              </div>
+
+              <div class="workflow-node">
+                <div class="workflow-num">5</div>
+                <div class="workflow-content">
+                  <div class="workflow-title">Docker Compose Containerization</div>
+                  <div class="workflow-desc">Playbook runs `docker compose up -d --build`. A brand new frontend container with custom Nginx reverse proxy is built.</div>
+                </div>
+              </div>
+
+              <div class="workflow-node">
+                <div class="workflow-num">6</div>
+                <div class="workflow-content">
+                  <div class="workflow-title">Kubernetes Pod Deployment</div>
+                  <div class="workflow-desc">Docker images are deployed as Kubernetes pods with replicas, service discovery, and rolling update strategies.</div>
+                </div>
+              </div>
+
+              <div class="workflow-node">
+                <div class="workflow-num">7</div>
+                <div class="workflow-content">
+                  <div class="workflow-title">Health Check & Verification</div>
+                  <div class="workflow-desc">Ansible and Jenkins check API endpoints with cURL. Retries every 10 seconds (max 12 times) until HTTP 200 is confirmed.</div>
+                </div>
+              </div>
+
+              <div class="workflow-node">
+                <div class="workflow-num">8</div>
+                <div class="workflow-content">
+                  <div class="workflow-title">Monitoring & Alerting</div>
+                  <div class="workflow-desc">Prometheus scrapes application metrics. Grafana dashboards visualize CPU, memory, request rates, and uptime in real-time.</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- 8. TOOLS & TECHNOLOGIES -->
+        <div class="section-card sec-tools">
+          <div class="card-header">
+            <span class="num">08</span> TOOLS & TECHNOLOGIES
+          </div>
+          <div class="card-body">
+            <div class="tools-grid">
+              
+              <div class="tool-item">
+                <div class="tool-icon-box">🐙</div>
+                <div class="tool-text">
+                  <div class="tool-name">GitHub / Git</div>
+                  <div class="tool-desc">Used for source code management, code collaboration, pull requests, and semantic version releases.</div>
+                </div>
+              </div>
+
+              <div class="tool-item">
+                <div class="tool-icon-box">🕵️‍♂️</div>
+                <div class="tool-text">
+                  <div class="tool-name">Jenkins Pipeline</div>
+                  <div class="tool-desc">Orchestrates the build cycle. Triggers tasks in sequence (Checkout, Build, Deploy, Health Check).</div>
+                </div>
+              </div>
+
+              <div class="tool-item">
+                <div class="tool-icon-box">🤖</div>
+                <div class="tool-text">
+                  <div class="tool-name">Ansible Playbook</div>
+                  <div class="tool-desc">Automates system installation packages, SSH authentication, swap space, and Docker Compose starts.</div>
+                </div>
+              </div>
+
+              <div class="tool-item">
+                <div class="tool-icon-box">🐳</div>
+                <div class="tool-text">
+                  <div class="tool-name">Docker Engine</div>
+                  <div class="tool-desc">Isolates microservices into containers. Ensures runtime configurations remain consistent everywhere.</div>
+                </div>
+              </div>
+
+              <div class="tool-item">
+                <div class="tool-icon-box">🔀</div>
+                <div class="tool-text">
+                  <div class="tool-name">Docker Compose</div>
+                  <div class="tool-desc">Manages multi-container structures. Connects web UI, Express API, and database in local networks.</div>
+                </div>
+              </div>
+
+              <div class="tool-item">
+                <div class="tool-icon-box">⚡</div>
+                <div class="tool-text">
+                  <div class="tool-name">Nginx Proxy</div>
+                  <div class="tool-desc">Serves React static build files efficiently and maps `/api/v1` routes to the backend container to bypass CORS.</div>
+                </div>
+              </div>
+
+              <div class="tool-item">
+                <div class="tool-icon-box">☁️</div>
+                <div class="tool-text">
+                  <div class="tool-name">AWS EC2 Cloud</div>
+                  <div class="tool-desc">Elastic Cloud Compute hosting virtual instances of Ubuntu Server to serve production loads.</div>
+                </div>
+              </div>
+
+              <div class="tool-item">
+                <div class="tool-icon-box">☸️</div>
+                <div class="tool-text">
+                  <div class="tool-name">Kubernetes</div>
+                  <div class="tool-desc">Container orchestration for automated pod deployment, scaling, rolling updates, and self-healing.</div>
+                </div>
+              </div>
+
+              <div class="tool-item">
+                <div class="tool-icon-box">📈</div>
+                <div class="tool-text">
+                  <div class="tool-name">Prometheus</div>
+                  <div class="tool-desc">Metrics collection and time-series monitoring with alerting rules for service health and performance.</div>
+                </div>
+              </div>
+
+              <div class="tool-item">
+                <div class="tool-icon-box">📊</div>
+                <div class="tool-text">
+                  <div class="tool-name">Grafana</div>
+                  <div class="tool-desc">Visualization and dashboards for real-time monitoring of application metrics and infrastructure health.</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ROW: 9. UML/ARCHITECTURE DIAGRAM & 10. TESTING -->
+      <div class="row-flex">
+        
+        <!-- 9. UML / ARCHITECTURE DIAGRAM -->
+        <div class="section-card sec-uml">
+          <div class="card-header">
+            <span class="num">09</span> UML / ARCHITECTURE DIAGRAM
+          </div>
+          <div class="card-body">
+            <!-- Embed aws_planning.png from the workspace -->
+            <div class="diagram-container">
+              <img src="images/aws_planning.png" class="diagram-image" alt="CineBook AWS Deployment Diagram">
+            </div>
+            <div style="text-align: center; margin-top: 10px; font-weight: 600; font-size: 14px; color: var(--text-light);">
+              Figure 9.1: AWS Cloud Network Architecture & EC2 Deployment Layout.
+            </div>
+          </div>
+        </div>
+
+        <!-- 10. TESTING -->
+        <div class="section-card sec-testing">
+          <div class="card-header">
+            <span class="num">10</span> DEPLOYMENT STAGE VALIDATION
+          </div>
+          <div class="card-body">
+            <table class="test-table">
+              <thead>
+                <tr>
+                  <th style="width: 10%;">ID</th>
+                  <th style="width: 25%;">Deployment Stage</th>
+                  <th style="width: 45%;">Verification Method</th>
+                  <th style="width: 20%;">Result</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>TS-01</td>
+                  <td>SCM Checkout</td>
+                  <td>Jenkins checkout Git revision matching main commit HEAD.</td>
+                  <td><span class="status-badge pass">Success</span></td>
+                </tr>
+                <tr>
+                  <td>TS-02</td>
+                  <td>Dependency Resolve</td>
+                  <td>NPM install executes with exit code 0 on Frontend and Backend.</td>
+                  <td><span class="status-badge pass">Success</span></td>
+                </tr>
+                <tr>
+                  <td>TS-03</td>
+                  <td>Production Build</td>
+                  <td>TypeScript builds backend, Vite bundle compiles frontend static assets.</td>
+                  <td><span class="status-badge pass">Success</span></td>
+                </tr>
+                <tr>
+                  <td>TS-04</td>
+                  <td>SSH Key Exchange</td>
+                  <td>Jenkins establishes secure credentials connection to EC2 remote host.</td>
+                  <td><span class="status-badge pass">Success</span></td>
+                </tr>
+                <tr>
+                  <td>TS-05</td>
+                  <td>Ansible Playbook</td>
+                  <td>Executes locally on host to pull updates and setup configuration.</td>
+                  <td><span class="status-badge pass">Success</span></td>
+                </tr>
+                <tr>
+                  <td>TS-06</td>
+                  <td>Containers Startup</td>
+                  <td>Verify container states: Mongo, Backend, and Nginx are up.</td>
+                  <td><span class="status-badge pass">Success</span></td>
+                </tr>
+                <tr>
+                  <td>TS-07</td>
+                  <td>Health Check Loop</td>
+                  <td>cURL verification to `/api/v1/movies` returns HTTP Code 200.</td>
+                  <td><span class="status-badge pass">Success</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 11. RESULTS / OUTPUT -->
+      <div class="section-card sec-results">
+        <div class="card-header">
+          <span class="num">11</span> PIPELINE EXECUTION RESULTS & AUTOMATION OUTPUT
+        </div>
+        <div class="card-body">
+          <div class="results-grid">
+            
+            <div class="result-item">
+              <div class="result-title">1. Jenkins Pipeline</div>
+              <div class="result-visual">
+                <div class="terminal-header">
+                  <div class="terminal-dot td-red"></div>
+                  <div class="terminal-dot td-yellow"></div>
+                  <div class="terminal-dot td-green"></div>
+                  <div class="terminal-title">jenkins_stage_view</div>
+                </div>
+                <div class="terminal-content">
+<span class="blue-text">[Stage View]</span> CineBook-Pipeline
+-----------------------------------
+<span class="green-text">✔ Checkout</span>            [  8s ]
+<span class="green-text">✔ Backend Install</span>     [ 22s ]
+<span class="green-text">✔ Frontend Install</span>    [ 35s ]
+<span class="green-text">✔ Backend Build</span>       [ 12s ]
+<span class="green-text">✔ Frontend Build</span>      [ 28s ]
+<span class="green-text">✔ Ansible Deploy</span>      [ 45s ]
+<span class="green-text">✔ Verify Deployment</span>   [ 10s ]
+-----------------------------------
+<span class="green-text">SUCCESS</span> (Total Duration: 2m 40s)</div>
+              </div>
+            </div>
+
+            <div class="result-item">
+              <div class="result-title">2. Ansible Task Execution</div>
+              <div class="result-visual">
+                <div class="terminal-header">
+                  <div class="terminal-dot td-red"></div>
+                  <div class="terminal-dot td-yellow"></div>
+                  <div class="terminal-dot td-green"></div>
+                  <div class="terminal-title">ansible-playbook</div>
+                </div>
+                <div class="terminal-content">
+PLAY [Deploy CineBook to EC2] *******
+TASK [Install System Packages] <span class="green-text">ok</span>
+TASK [Install Docker Engine] <span class="green-text">ok</span>
+TASK [Create swap file] <span class="yellow-text">changed</span>
+TASK [Clone CineBook Repo] <span class="yellow-text">changed</span>
+TASK [Create backend .env] <span class="yellow-text">changed</span>
+TASK [docker compose up] <span class="yellow-text">changed</span>
+TASK [Wait for backend] <span class="green-text">ok</span>
+
+PLAY RECAP **************************
+localhost : <span class="green-text">ok=8</span> <span class="yellow-text">changed=4</span> failed=0</div>
+              </div>
+            </div>
+
+            <div class="result-item">
+              <div class="result-title">3. Docker Containers</div>
+              <div class="result-visual">
+                <div class="terminal-header">
+                  <div class="terminal-dot td-red"></div>
+                  <div class="terminal-dot td-yellow"></div>
+                  <div class="terminal-dot td-green"></div>
+                  <div class="terminal-title">docker_ps</div>
+                </div>
+                <div class="terminal-content">
+$ docker ps --format "table {{.Names}}\t{{.Status}}"
+
+<span class="blue-text">NAMES</span>               <span class="blue-text">STATUS</span>
+cinebook-frontend   Up 12 minutes (healthy)
+cinebook-backend    Up 12 minutes (healthy)
+cinebook-mongo      Up 12 minutes</div>
+              </div>
+            </div>
+
+            <div class="result-item">
+              <div class="result-title">4. API Health Verification</div>
+              <div class="result-visual">
+                <div class="terminal-header">
+                  <div class="terminal-dot td-red"></div>
+                  <div class="terminal-dot td-yellow"></div>
+                  <div class="terminal-dot td-green"></div>
+                  <div class="terminal-title">verification_script</div>
+                </div>
+                <div class="terminal-content">
+🚀 Running health check...
+Attempt 1/12 - checking api route...
+HTTP Code Returned: <span class="green-text">200 OK</span>
+Response Body Payload:
+{
+  "status": "success",
+  "data": { "moviesCount": 24 }
+}
+<span class="green-text">✅ Backend deployment verification successful!</span></div>
+              </div>
+            </div>
+
+            <div class="result-item">
+              <div class="result-title">5. Production Endpoint</div>
+              <div class="result-visual">
+                <div class="terminal-header">
+                  <div class="terminal-dot td-red"></div>
+                  <div class="terminal-dot td-yellow"></div>
+                  <div class="terminal-dot td-green"></div>
+                  <div class="terminal-title">curl_output</div>
+                </div>
+                <div class="terminal-content">
+$ curl -I http://32.236.37.142
+
+HTTP/1.1 200 OK
+Server: nginx/1.25.3
+Content-Type: text/html
+Cache-Control: no-cache, no-store
+Connection: keep-alive
+
+<span class="green-text">CineBook App Loaded successfully.</span></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW: 12. ADVANTAGES, 13. FUTURE ENHANCEMENTS, 14. CONCLUSION -->
+      <div class="row-flex">
+        
+        <!-- 12. ADVANTAGES -->
+        <div class="section-card sec-advantages">
+          <div class="card-header">
+            <span class="num">12</span> KEY ADVANTAGES
+          </div>
+          <div class="card-body">
+            <ul>
+              <li class="check"><span class="bold-tag">Collaborative Integration</span>: Webhook integration links branch commits to automated tests, eliminating broken code merges.</li>
+              <li class="check"><span class="bold-tag">Hermetic Environments</span>: Docker containerization ensures identical package runtimes across dev, staging, and AWS production.</li>
+              <li class="check"><span class="bold-tag">Rapid Configuration</span>: Ansible handles server configurations dynamically, letting engineers deploy setups in a single command.</li>
+              <li class="check"><span class="bold-tag">Zero Configuration Leaks</span>: Ansible templates and Jenkins secrets manage security keys, ensuring private keys are never committed.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 13. FUTURE ENHANCEMENTS -->
+        <div class="section-card sec-future">
+          <div class="card-header">
+            <span class="num">13</span> FUTURE ENHANCEMENTS
+          </div>
+          <div class="card-body">
+            <ul>
+              <li><span class="bold-tag">GitOps CD with ArgoCD</span>: Transition from push-based Jenkins scripts to pull-based declarative synchronization via Git.</li>
+              <li><span class="bold-tag">Canary & Blue-Green Releases</span>: Integrate traffic splitting with Istio service mesh to safely test new releases with a subset of users.</li>
+              <li><span class="bold-tag">Automated Chaos Engineering</span>: Inject failures (e.g., using Chaos Mesh) in staging to test auto-healing and recovery metrics.</li>
+              <li><span class="bold-tag">Zero-Trust Secrets Orchestration</span>: Implement dynamic database credential rotation via HashiCorp Vault.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 14. CONCLUSION -->
+        <div class="section-card sec-conclusion">
+          <div class="card-header">
+            <span class="num">14</span> CONCLUSION
+          </div>
+          <div class="card-body">
+            <p>
+              The implemented DevOps workflow transitions the **CineBook** application from a fragile manual release process to a modern, robust, and automated continuous deployment pipeline. 
+            </p>
+            <p>
+              By leveraging **Jenkins** for build scheduling, **Ansible** for environment configuration, and **Docker Compose** for microservices orchestration, the system secures reliable releases on **AWS EC2**. The addition of continuous health checks guarantees service integrity, enhancing project collaboration efficiency, security, and cloud scalability.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ─── FOOTER BAR ─── -->
+  <footer>
+    <div class="footer-left">DevOps Case Study: CineBook Project</div>
+    <div class="footer-center">TEAM NUMBER: C-6</div>
+    <div class="footer-right">© 2026 Department of Computer Science & Engineering</div>
+  </footer>
+
+</body>
+</html>
