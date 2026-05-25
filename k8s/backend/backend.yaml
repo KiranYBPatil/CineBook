@@ -34,6 +34,21 @@ spec:
 
         - name: MONGO_CONNECTION_STRING
           value: "mongodb+srv://CineBook:CineBook@cinebook.0thnkha.mongodb.net/cinebook?retryWrites=true&w=majority&appName=CineBook"
+
+        - name: JWT_SECRET
+          value: "cinebook_jwt_secret_2026"
+
+        - name: HASH_SECRET
+          value: "cinebook_hash_secret_2026"
+
+        - name: ACCESS_TOKEN_SECRET
+          value: "cinebook_access_token_secret_2026"
+
+        - name: REFRESH_TOKEN_SECRET
+          value: "cinebook_refresh_token_secret_2026"
+
+        - name: FRONTEND_URL
+          value: "http://localhost"
 ---
 apiVersion: v1
 kind: Service

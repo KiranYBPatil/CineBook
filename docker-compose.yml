@@ -21,10 +21,14 @@ services:
     restart: unless-stopped
     expose:
       - "9000"
-    env_file:
-      - ./bms-backend/.env
     environment:
       - MONGO_CONNECTION_STRING=mongodb://mongo:27017/bookmyscreen
+      - PORT=9000
+      - JWT_SECRET=cinebook_jwt_secret_2026
+      - HASH_SECRET=cinebook_hash_secret_2026
+      - ACCESS_TOKEN_SECRET=cinebook_access_token_secret_2026
+      - REFRESH_TOKEN_SECRET=cinebook_refresh_token_secret_2026
+      - FRONTEND_URL=http://localhost
     depends_on:
       - mongo
     networks:
