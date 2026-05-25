@@ -4,7 +4,13 @@ import fitz
 
 def main():
     # ─── File Paths ────────────────────────────────────
-    edge_path = r'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe'
+    # Look for Microsoft Edge in common installation paths
+    edge_paths = [
+        r'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe',
+        r'C:\Program Files\Microsoft\Edge\Application\msedge.exe'
+    ]
+    edge_path = next((path for path in edge_paths if os.path.exists(path)), edge_paths[0])
+    
     html_path = os.path.abspath('poster.html')
     pdf_path = os.path.abspath('poster.pdf')
     png_path = os.path.abspath('poster.png')
@@ -18,9 +24,9 @@ def main():
         print(f"Error: {html_path} does not exist.")
         return
         
-    # Check if Microsoft Edge is installed at the expected path
+    # Check if Microsoft Edge is installed
     if not os.path.exists(edge_path):
-        print(f"Error: Microsoft Edge not found at {edge_path}.")
+        print(f"Error: Microsoft Edge not found in common paths: {edge_paths}")
         return
 
     # ─── Step 1: Render HTML to PDF via Edge Headless ───
