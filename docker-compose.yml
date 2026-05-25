@@ -1,3 +1,4 @@
+# CineBook Multi-container Setup
 services:
   # ─── MongoDB ───────────────────────────────────────
   mongo:
