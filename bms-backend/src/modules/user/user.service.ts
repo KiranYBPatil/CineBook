@@ -1,12 +1,12 @@
 import User from "./user.model";
-import { hash, compare } from "bcryptjs";
+import bcrypt from "bcryptjs";
 
 export const createUser = async (data: {
   username: string;
   email: string;
   password: string;
 }) => {
-  const hashedPassword = await hash(data.password, 10);
+  const hashedPassword = await bcrypt.hash(data.password, 10);
 
   return User.create({
     username: data.username,
@@ -17,8 +17,13 @@ export const createUser = async (data: {
 
 export const validateUser = async (email: string, password: string) => {
   const user = await User.findOne({ email });
-  if (!user) return null;
+  if (!user) {
+    console.log("[validateUser] No user found for email:", email);
+    return null;
+  }
 
-  const isMatch = await compare(password, user.password);
+  console.log("[validateUser] User found, comparing passwords...");
+  const isMatch = await bcrypt.compare(password, user.password);
+  console.log("[validateUser] Password match result:", isMatch);
   return isMatch ? user : null;
 };

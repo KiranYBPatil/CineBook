@@ -60,6 +60,10 @@ pipeline {
                     sh '''
                     export KUBECONFIG=$KUBECONFIG_FILE
 
+                    kubectl apply -f k8s/backend/backend.yaml
+                    kubectl apply -f k8s/frontend/frontend.yaml
+                    kubectl apply -f k8s/frontend/frontend-service.yaml
+
                     kubectl rollout restart deployment cinebook-backend -n cinebook
 
                     kubectl rollout restart deployment cinebook-frontend -n cinebook
