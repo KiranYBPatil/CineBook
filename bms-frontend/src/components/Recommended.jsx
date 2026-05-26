@@ -26,7 +26,7 @@ const Recommended = () => {
   });
 
   if (isLoading) {
-    return <p className="text-center py-10">Loading movies...</p>;
+    return <p className="text-center py-10 text-[var(--text-primary)]">Loading movies...</p>;
   }
 
   if (isError) {
@@ -42,10 +42,10 @@ const Recommended = () => {
   console.log("Recommended movies count:", movies.length);
 
   return (
-    <div className="w-full py-6 bg-white">
+    <div className="w-full py-6 bg-[var(--bg-primary)] transition-colors duration-200">
       <div className="max-w-screen-xl mx-auto px-4">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-semibold">
+          <h2 className="text-2xl font-semibold text-[var(--text-primary)]">
             Recommended Movies
           </h2>
 
@@ -58,7 +58,7 @@ const Recommended = () => {
         </div>
 
         {movies.length === 0 ? (
-          <p className="text-center text-gray-500">
+          <p className="text-center text-gray-500 dark:text-gray-400">
             No movies available
           </p>
         ) : (
@@ -75,16 +75,16 @@ const Recommended = () => {
                   className="w-full h-[300px] object-cover rounded"
                 />
 
-                <div className="bg-black text-white text-sm px-2 py-1 flex justify-between">
+                <div className="bg-black dark:bg-gray-900 text-white text-sm px-2 py-1 flex justify-between">
                   <span>⭐ {movie.rating}/10</span>
                   <span>{movie.votes} Votes</span>
                 </div>
 
-                <div className="px-2 py-1">
-                  <h3 className="font-semibold text-lg">
+                <div className="px-2 py-1 bg-[var(--bg-card)]">
+                  <h3 className="font-semibold text-lg text-[var(--text-primary)]">
                     {movie.title}
                   </h3>
-                  <p className="text-md text-gray-500">
+                  <p className="text-md text-gray-500 dark:text-gray-400">
                     {movie.genre.join(" | ")}
                   </p>
                 </div>

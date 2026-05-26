@@ -10,15 +10,15 @@ const MovieCard = ({ movie }) => {
         className="rounded-lg shadow-md"
       />
 
-      <p className="mt-2 font-medium">{movie.title}</p>
+      <p className="mt-2 font-medium text-[var(--text-primary)]">{movie.title}</p>
 
-      <p className="text-xs text-gray-500">
+      <p className="text-xs text-gray-500 dark:text-gray-400">
         {movie.rating} | {movie.votes}
       </p>
 
-      <p className="text-sm text-gray-600">{movie.certification}</p>
+      <p className="text-sm text-gray-600 dark:text-gray-400">{movie.certification}</p>
 
-      <p className="text-sm text-gray-500 truncate">
+      <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
         {movie.languages.join(" | ")}
       </p>
     </div>

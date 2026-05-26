@@ -122,16 +122,16 @@ export default function Profile() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-lg font-semibold">Loading your bookings...</p>
+        <p className="text-lg font-semibold text-[var(--text-primary)]">Loading your bookings...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-gray-100 dark:bg-[#14141e] p-6 transition-colors duration-200">
       {/* PROFILE HEADER */}
-      <div className="bg-white rounded-xl shadow p-6 mb-8 flex justify-between items-center">
-        <h2 className="text-2xl font-bold">
+      <div className="bg-white dark:bg-[#1e1e2d] rounded-xl shadow p-6 mb-8 flex justify-between items-center border border-[var(--border-color)]">
+        <h2 className="text-2xl font-bold text-[var(--text-primary)]">
           👋 Hi, {user?.username}
         </h2>
 
@@ -144,11 +144,11 @@ export default function Profile() {
       </div>
 
       {/* BOOKINGS */}
-      <h3 className="text-xl font-bold mb-4">My Bookings</h3>
+      <h3 className="text-xl font-bold mb-4 text-[var(--text-primary)]">My Bookings</h3>
 
       {bookings.length === 0 ? (
-        <div className="bg-white p-8 rounded-xl shadow text-center">
-          <p className="text-lg text-gray-600">
+        <div className="bg-white dark:bg-[#1e1e2d] p-8 rounded-xl shadow text-center border border-[var(--border-color)]">
+          <p className="text-lg text-gray-600 dark:text-gray-400">
             You have not booked any tickets yet 🎬
           </p>
         </div>
@@ -157,22 +157,22 @@ export default function Profile() {
           {bookings.map((booking) => (
             <div
               key={booking._id}
-              className="bg-white rounded-xl shadow p-6 space-y-2"
+              className="bg-white dark:bg-[#1e1e2d] rounded-xl shadow p-6 space-y-2 border border-[var(--border-color)]"
             >
-              <h3 className="text-xl font-bold text-purple-700">
+              <h3 className="text-xl font-bold text-purple-700 dark:text-purple-300">
                 🎥 {booking.movie?.title}
               </h3>
 
-              <p>
+              <p className="text-[var(--text-primary)]">
                 👤 <strong>{booking.user.username}</strong> (
                 {booking.user.email})
               </p>
 
-              <p>
+              <p className="text-[var(--text-primary)]">
                 📍 <strong>Theater:</strong> {booking.theater?.name}
               </p>
 
-              <p>
+              <p className="text-[var(--text-primary)]">
                 📅 <strong>Date:</strong> {booking.showDate} (
                 {new Date(booking.showDate).toLocaleDateString("en-IN", {
                   weekday: "long",
@@ -180,15 +180,15 @@ export default function Profile() {
                 )
               </p>
 
-              <p>
+              <p className="text-[var(--text-primary)]">
                 ⏰ <strong>Show Time:</strong> {booking.showTime}
               </p>
 
-              <p>
+              <p className="text-[var(--text-primary)]">
                 💺 <strong>Seats:</strong> {booking.seats.join(", ")}
               </p>
 
-              <p className="text-lg font-bold">
+              <p className="text-lg font-bold text-[var(--text-primary)]">
                 💰 Total Paid: ₹{booking.amount}
               </p>
 
