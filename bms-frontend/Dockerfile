@@ -16,7 +16,7 @@ COPY . .
 
 # Build-time env variable for the API URL
 # Override at build: docker build --build-arg VITE_BACKEND_URL=https://api.cinebook.com/api/v1 .
-ARG VITE_BACKEND_URL=http://localhost:9000/api/v1
+ARG VITE_BACKEND_URL=/api/v1
 ENV VITE_BACKEND_URL=$VITE_BACKEND_URL
 
 # Build the production bundle
