@@ -20,7 +20,7 @@ const MovieDetails = () => {
   }
 
   if (!movieData) {
-    return <div className="text-[var(--text-primary)]">Loading...</div>;
+    return <div className="text-white">Loading...</div>;
   }
 
   return (
@@ -33,13 +33,13 @@ const MovieDetails = () => {
           backgroundPosition: "center",
         }}
       >
-        <div className="absolute inset-0 bg-black/70"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/70 to-black/60"></div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 py-16 flex gap-10">
           <img
             src={movieData.posterUrl}
             alt={movieData.title}
-            className="w-56 rounded-xl shadow-2xl"
+            className="w-56 rounded-xl shadow-2xl shadow-purple-900/30 transition-transform duration-300 hover:scale-105"
           />
 
           <div className="flex-1">
@@ -47,8 +47,8 @@ const MovieDetails = () => {
               {movieData.title}
             </h1>
 
-            <div className="bg-[#2b2b2b] inline-flex items-center gap-4 px-4 py-3 rounded-md mb-4">
-              <span className="text-pink-500 font-bold">
+            <div className="bg-white/10 backdrop-blur-sm inline-flex items-center gap-4 px-4 py-3 rounded-xl mb-4 border border-white/10">
+              <span className="text-pink-400 font-bold text-lg">
                 ★ {movieData.rating}/10
               </span>
               <span className="text-gray-300">
@@ -60,7 +60,7 @@ const MovieDetails = () => {
               {movieData.format.map((f, i) => (
                 <span
                   key={i}
-                  className="bg-[#404040] px-3 py-1 rounded text-sm"
+                  className="bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full text-sm border border-white/10"
                 >
                   {f}
                 </span>
@@ -79,7 +79,7 @@ const MovieDetails = () => {
             </p>
 
             <h2 className="text-xl font-bold mb-2">About the movie</h2>
-            <p className="text-sm text-gray-300 leading-relaxed">
+            <p className="text-sm text-gray-300 leading-relaxed max-w-2xl">
               {movieData.description}
             </p>
           </div>

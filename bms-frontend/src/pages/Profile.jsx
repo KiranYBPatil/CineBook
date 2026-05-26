@@ -122,33 +122,33 @@ export default function Profile() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-lg font-semibold text-[var(--text-primary)]">Loading your bookings...</p>
+        <p className="text-lg font-semibold text-gray-500 animate-pulse">Loading your bookings...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-[#14141e] p-6 transition-colors duration-200">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50/30 to-pink-50/30 p-6">
       {/* PROFILE HEADER */}
-      <div className="bg-white dark:bg-[#1e1e2d] rounded-xl shadow p-6 mb-8 flex justify-between items-center border border-[var(--border-color)]">
-        <h2 className="text-2xl font-bold text-[var(--text-primary)]">
+      <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg shadow-purple-200/30 p-6 mb-8 flex justify-between items-center border border-purple-100">
+        <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-700 to-pink-600 bg-clip-text text-transparent">
           👋 Hi, {user?.username}
         </h2>
 
         <button
           onClick={handleLogout}
-          className="px-6 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition"
+          className="px-6 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl font-semibold hover:from-red-600 hover:to-red-700 transition-all duration-300 shadow-md hover:shadow-lg"
         >
           Logout
         </button>
       </div>
 
       {/* BOOKINGS */}
-      <h3 className="text-xl font-bold mb-4 text-[var(--text-primary)]">My Bookings</h3>
+      <h3 className="text-xl font-bold mb-4 text-gray-800">My Bookings</h3>
 
       {bookings.length === 0 ? (
-        <div className="bg-white dark:bg-[#1e1e2d] p-8 rounded-xl shadow text-center border border-[var(--border-color)]">
-          <p className="text-lg text-gray-600 dark:text-gray-400">
+        <div className="bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-lg text-center border border-purple-100">
+          <p className="text-lg text-gray-500">
             You have not booked any tickets yet 🎬
           </p>
         </div>
@@ -157,22 +157,22 @@ export default function Profile() {
           {bookings.map((booking) => (
             <div
               key={booking._id}
-              className="bg-white dark:bg-[#1e1e2d] rounded-xl shadow p-6 space-y-2 border border-[var(--border-color)]"
+              className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg shadow-purple-200/20 p-6 space-y-2 border border-purple-100 transition-all duration-300 hover:shadow-xl hover:shadow-purple-200/40"
             >
-              <h3 className="text-xl font-bold text-purple-700 dark:text-purple-300">
+              <h3 className="text-xl font-bold bg-gradient-to-r from-purple-700 to-pink-600 bg-clip-text text-transparent">
                 🎥 {booking.movie?.title}
               </h3>
 
-              <p className="text-[var(--text-primary)]">
+              <p className="text-gray-700">
                 👤 <strong>{booking.user.username}</strong> (
                 {booking.user.email})
               </p>
 
-              <p className="text-[var(--text-primary)]">
+              <p className="text-gray-700">
                 📍 <strong>Theater:</strong> {booking.theater?.name}
               </p>
 
-              <p className="text-[var(--text-primary)]">
+              <p className="text-gray-700">
                 📅 <strong>Date:</strong> {booking.showDate} (
                 {new Date(booking.showDate).toLocaleDateString("en-IN", {
                   weekday: "long",
@@ -180,21 +180,21 @@ export default function Profile() {
                 )
               </p>
 
-              <p className="text-[var(--text-primary)]">
+              <p className="text-gray-700">
                 ⏰ <strong>Show Time:</strong> {booking.showTime}
               </p>
 
-              <p className="text-[var(--text-primary)]">
+              <p className="text-gray-700">
                 💺 <strong>Seats:</strong> {booking.seats.join(", ")}
               </p>
 
-              <p className="text-lg font-bold text-[var(--text-primary)]">
+              <p className="text-lg font-bold text-purple-700">
                 💰 Total Paid: ₹{booking.amount}
               </p>
 
               <button
                 onClick={() => downloadTicket(booking)}
-                className="mt-3 px-4 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-800 transition"
+                className="mt-3 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-500 text-white rounded-xl font-semibold hover:from-purple-700 hover:to-pink-600 transition-all duration-300 shadow-md hover:shadow-lg"
               >
                 📄 Download Ticket (PDF)
               </button>

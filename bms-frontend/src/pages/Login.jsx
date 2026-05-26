@@ -23,23 +23,22 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center 
-                    bg-gradient-to-br from-purple-50 via-pink-50 to-white dark:from-[#0f0f13] dark:via-[#1a1a23] dark:to-[#0f0f13]">
+                    bg-gradient-to-br from-purple-100 via-pink-50 to-white">
       <form
         onSubmit={submit}
-        className="w-96 bg-white dark:bg-[#1e1e2d] p-8 rounded-2xl space-y-5
-                   border border-gray-200 dark:border-gray-700
-                   shadow-[0_10px_30px_rgba(0,0,0,0.08)] dark:shadow-[0_10px_30px_rgba(0,0,0,0.4)]
-                   hover:shadow-[0_16px_40px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_16px_40px_rgba(0,0,0,0.5)]
-                   transition"
+        className="w-96 bg-white/90 backdrop-blur-sm p-8 rounded-2xl space-y-5
+                   border border-purple-100
+                   shadow-[0_20px_60px_rgba(139,92,246,0.15)]
+                   hover:shadow-[0_25px_80px_rgba(139,92,246,0.2)]
+                   transition-all duration-300"
       >
-        {/* Movie accent strip */}
-        <div className="h-1 w-16 bg-gradient-to-r from-purple-500 to-pink-500 
+        <div className="h-1.5 w-20 bg-gradient-to-r from-purple-500 to-pink-500 
                         rounded-full mx-auto"></div>
 
-        <h2 className="text-2xl font-semibold text-center text-gray-800 dark:text-gray-100">
-          Login
+        <h2 className="text-2xl font-bold text-center text-gray-800">
+          Welcome Back
         </h2>
-        <p className="text-center text-sm text-gray-500 dark:text-gray-400">
+        <p className="text-center text-sm text-gray-500">
           Continue booking your favourites
         </p>
 
@@ -48,10 +47,9 @@ export default function Login() {
           type="email"
           placeholder="Email"
           required
-          className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-xl
-                     focus:outline-none focus:ring-2 
-                     focus:ring-purple-400 focus:border-purple-400
-                     bg-[var(--bg-primary)] text-[var(--text-primary)]"
+          className="w-full p-3 border border-gray-200 rounded-xl
+                     focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400
+                     transition-all duration-200 bg-white"
         />
 
         <input
@@ -59,24 +57,24 @@ export default function Login() {
           type="password"
           placeholder="Password"
           required
-          className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-xl
-                     focus:outline-none focus:ring-2 
-                     focus:ring-purple-400 focus:border-purple-400
-                     bg-[var(--bg-primary)] text-[var(--text-primary)]"
+          className="w-full p-3 border border-gray-200 rounded-xl
+                     focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400
+                     transition-all duration-200 bg-white"
         />
 
         <button
           className="w-full bg-gradient-to-r from-purple-600 to-pink-500
                      hover:from-purple-700 hover:to-pink-600
-                     text-white py-3 rounded-xl font-semibold
-                     transition transform hover:-translate-y-0.5"
+                     text-white py-3 rounded-xl font-bold
+                     transition-all duration-300 transform hover:-translate-y-0.5
+                     shadow-lg shadow-purple-300/40 hover:shadow-xl hover:shadow-purple-400/50"
         >
           Login
         </button>
 
-        <p className="text-center text-sm text-gray-600 dark:text-gray-400">
+        <p className="text-center text-sm text-gray-500">
           New user?{" "}
-          <Link to="/signup" className="text-purple-600 dark:text-purple-400 hover:underline">
+          <Link to="/signup" className="text-purple-600 font-semibold hover:text-purple-800 hover:underline transition-colors">
             Sign up
           </Link>
         </p>
