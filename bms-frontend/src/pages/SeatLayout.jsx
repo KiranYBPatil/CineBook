@@ -50,10 +50,10 @@ const Seat = ({
       className={`w-9 h-9 m-[2px] rounded-lg border text-sm
         ${
           isBooked
-            ? "bg-gray-400 text-white cursor-not-allowed"
-            : "hover:bg-gray-100 cursor-pointer"
+            ? "bg-gray-400 dark:bg-gray-600 text-white cursor-not-allowed"
+            : "hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
         }
-        ${isSelected ? "bg-purple-600 text-white" : ""}
+        ${isSelected ? "bg-purple-600 text-white" : "bg-[var(--bg-card)] text-[var(--text-primary)] border-gray-300 dark:border-gray-600"}
       `}
       title={isBooked ? "Seat already booked" : "Available"}
     >
@@ -101,7 +101,7 @@ const SeatLayout = () => {
   });
 
   if (isLoading) {
-    return <div className="p-6">Loading seats...</div>;
+    return <div className="p-6 text-[var(--text-primary)]">Loading seats...</div>;
   }
 
   const handleProceed = () => {
@@ -113,7 +113,7 @@ const SeatLayout = () => {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-white">
+    <div className="h-screen overflow-hidden bg-[var(--bg-primary)] transition-colors duration-200">
       <div className="fixed top-0 left-0 w-full z-10">
         <Header showData={showData} />
       </div>
@@ -123,7 +123,7 @@ const SeatLayout = () => {
           {Object.entries(groupedSeats).map(
             ([category, { price, rows }]) => (
               <div key={category} className="mb-12 w-full text-center">
-                <h2 className="font-semibold text-lg mb-4">
+                <h2 className="font-semibold text-lg mb-4 text-[var(--text-primary)]">
                   {category} : ₹{price}
                 </h2>
 
@@ -132,7 +132,7 @@ const SeatLayout = () => {
                     key={rowObj.row}
                     className="flex items-center justify-center mb-2"
                   >
-                    <div className="w-6 mr-2 text-sm text-gray-600">
+                    <div className="w-6 mr-2 text-sm text-gray-600 dark:text-gray-400">
                       {rowObj.row}
                     </div>
 
@@ -162,13 +162,13 @@ const SeatLayout = () => {
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 w-full h-[100px] bg-white border-t px-6 py-4 flex justify-between items-center">
-        <p className="font-medium text-gray-700">
+      <div className="fixed bottom-0 left-0 w-full h-[100px] bg-[var(--bg-primary)] dark:bg-[#1a1a23] border-t border-[var(--border-color)] px-6 py-4 flex justify-between items-center">
+        <p className="font-medium text-gray-700 dark:text-gray-300">
           {selectedSeats.length} Selected
         </p>
         <button
           onClick={handleProceed}
-          className="bg-black text-white px-6 py-2 rounded-lg font-semibold"
+          className="bg-black dark:bg-purple-700 text-white px-6 py-2 rounded-lg font-semibold"
         >
           Proceed
         </button>

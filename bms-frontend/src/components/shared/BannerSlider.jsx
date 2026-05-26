@@ -5,7 +5,7 @@ import { banners } from "../../utils/constants";
 const BannerSlider = () => {
   const settings = {
     centerMode: true,
-    centerPadding: "200px", // ⬅️ reduced for wider banners
+    centerPadding: "200px",
     slidesToShow: 1,
     infinite: true,
     autoplay: true,
@@ -31,7 +31,7 @@ const BannerSlider = () => {
   };
 
   return (
-    <div className="w-full bg-white py-6">
+    <div className="w-full bg-[var(--bg-primary)] py-6 transition-colors duration-200">
       <div className="mx-auto px-4">
         <Slider {...settings}>
           {banners.map((banner, i) => (

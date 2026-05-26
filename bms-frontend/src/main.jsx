@@ -9,6 +9,7 @@ import "./index.css";
 import { LocationProvider } from "./context/LocationContext";
 import { SeatProvider } from "./context/SeatContext";
 import { AuthProvider } from "./context/AuthContext";
+import { ThemeProvider } from "./context/ThemeContext";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,13 +23,15 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <LocationProvider>
-            <SeatProvider>
-              <App />
-            </SeatProvider>
-          </LocationProvider>
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <LocationProvider>
+              <SeatProvider>
+                <App />
+              </SeatProvider>
+            </LocationProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </QueryClientProvider>
     </BrowserRouter>
   </StrictMode>
