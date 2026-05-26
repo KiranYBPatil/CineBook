@@ -28,7 +28,7 @@ function App() {
   const isCheckoutPage = useMatch("/shows/:showId/:state/checkout");
 
   return (
-    <div className="flex flex-col min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] transition-colors duration-200">
+    <div className="flex flex-col min-h-screen">
       {/* Header */}
       {!isSeatLayoutPage && !isCheckoutPage && <Header />}
 

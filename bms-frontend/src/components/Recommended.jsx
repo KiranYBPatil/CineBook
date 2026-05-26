@@ -26,65 +26,62 @@ const Recommended = () => {
   });
 
   if (isLoading) {
-    return <p className="text-center py-10 text-[var(--text-primary)]">Loading movies...</p>;
+    return <p className="text-center py-10 text-gray-500 animate-pulse">Loading movies...</p>;
   }
 
   if (isError) {
     return <p className="text-center py-10 text-red-500">Failed to load movies</p>;
   }
 
-  // ✅ SAFELY HANDLE RESPONSE
   const movies =
     data?.data?.topMovies ||
     data?.data?.movies ||
     [];
 
-  console.log("Recommended movies count:", movies.length);
-
   return (
-    <div className="w-full py-6 bg-[var(--bg-primary)] transition-colors duration-200">
+    <div className="w-full py-6 bg-gradient-to-b from-white to-purple-50/10">
       <div className="max-w-screen-xl mx-auto px-4">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-semibold text-[var(--text-primary)]">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-700 to-pink-600 bg-clip-text text-transparent">
             Recommended Movies
           </h2>
 
           <span
             onClick={() => navigate("/movies")}
-            className="text-md text-red-500 cursor-pointer hover:underline font-medium"
+            className="text-md text-purple-600 cursor-pointer hover:text-purple-800 font-medium transition-colors"
           >
-            See All
+            See All →
           </span>
         </div>
 
         {movies.length === 0 ? (
-          <p className="text-center text-gray-500 dark:text-gray-400">
+          <p className="text-center text-gray-500">
             No movies available
           </p>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
             {movies.map((movie) => (
               <div
                 key={movie._id}
                 onClick={() => handleNavigate(movie)}
-                className="rounded overflow-hidden cursor-pointer hover:scale-105 transition"
+                className="rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-purple-200/50 shadow-md"
               >
                 <img
                   src={movie.posterUrl}
                   alt={movie.title}
-                  className="w-full h-[300px] object-cover rounded"
+                  className="w-full h-[300px] object-cover"
                 />
 
-                <div className="bg-black dark:bg-gray-900 text-white text-sm px-2 py-1 flex justify-between">
+                <div className="bg-gradient-to-r from-purple-700 to-pink-600 text-white text-sm px-2 py-1 flex justify-between">
                   <span>⭐ {movie.rating}/10</span>
                   <span>{movie.votes} Votes</span>
                 </div>
 
-                <div className="px-2 py-1 bg-[var(--bg-card)]">
-                  <h3 className="font-semibold text-lg text-[var(--text-primary)]">
+                <div className="px-2 py-1 bg-white">
+                  <h3 className="font-semibold text-lg text-gray-800">
                     {movie.title}
                   </h3>
-                  <p className="text-md text-gray-500 dark:text-gray-400">
+                  <p className="text-md text-gray-500">
                     {movie.genre.join(" | ")}
                   </p>
                 </div>

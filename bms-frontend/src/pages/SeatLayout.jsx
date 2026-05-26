@@ -47,13 +47,13 @@ const Seat = ({
           time: showData.startTime,
         });
       }}
-      className={`w-9 h-9 m-[2px] rounded-lg border text-sm
+      className={`w-9 h-9 m-[2px] rounded-lg border text-sm font-medium transition-all duration-150
         ${
           isBooked
-            ? "bg-gray-400 dark:bg-gray-600 text-white cursor-not-allowed"
-            : "hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+            ? "bg-gray-300 text-white cursor-not-allowed border-gray-300"
+            : "hover:bg-purple-100 hover:border-purple-400 cursor-pointer bg-white border-gray-300 text-gray-700"
         }
-        ${isSelected ? "bg-purple-600 text-white" : "bg-[var(--bg-card)] text-[var(--text-primary)] border-gray-300 dark:border-gray-600"}
+        ${isSelected ? "bg-gradient-to-br from-purple-600 to-pink-500 text-white border-purple-600 shadow-md shadow-purple-300/40 scale-105" : ""}
       `}
       title={isBooked ? "Seat already booked" : "Available"}
     >
@@ -101,7 +101,7 @@ const SeatLayout = () => {
   });
 
   if (isLoading) {
-    return <div className="p-6 text-[var(--text-primary)]">Loading seats...</div>;
+    return <div className="p-6 text-gray-500 animate-pulse">Loading seats...</div>;
   }
 
   const handleProceed = () => {
@@ -113,7 +113,7 @@ const SeatLayout = () => {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-[var(--bg-primary)] transition-colors duration-200">
+    <div className="h-screen overflow-hidden bg-gradient-to-br from-purple-50 via-white to-pink-50">
       <div className="fixed top-0 left-0 w-full z-10">
         <Header showData={showData} />
       </div>
@@ -123,8 +123,10 @@ const SeatLayout = () => {
           {Object.entries(groupedSeats).map(
             ([category, { price, rows }]) => (
               <div key={category} className="mb-12 w-full text-center">
-                <h2 className="font-semibold text-lg mb-4 text-[var(--text-primary)]">
-                  {category} : ₹{price}
+                <h2 className="font-bold text-lg mb-4 text-gray-700">
+                  <span className="bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">
+                    {category}
+                  </span> : ₹{price}
                 </h2>
 
                 {rows.map((rowObj) => (
@@ -132,7 +134,7 @@ const SeatLayout = () => {
                     key={rowObj.row}
                     className="flex items-center justify-center mb-2"
                   >
-                    <div className="w-6 mr-2 text-sm text-gray-600 dark:text-gray-400">
+                    <div className="w-6 mr-2 text-sm font-semibold text-gray-500">
                       {rowObj.row}
                     </div>
 
@@ -158,17 +160,17 @@ const SeatLayout = () => {
         </div>
 
         <div className="flex justify-center mt-6">
-          <img src={screenImg} alt="Screen" className="w-[400px]" />
+          <img src={screenImg} alt="Screen" className="w-[400px] opacity-80" />
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 w-full h-[100px] bg-[var(--bg-primary)] dark:bg-[#1a1a23] border-t border-[var(--border-color)] px-6 py-4 flex justify-between items-center">
-        <p className="font-medium text-gray-700 dark:text-gray-300">
+      <div className="fixed bottom-0 left-0 w-full h-[100px] bg-white/90 backdrop-blur-sm border-t border-gray-200 px-6 py-4 flex justify-between items-center shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+        <p className="font-semibold text-gray-700">
           {selectedSeats.length} Selected
         </p>
         <button
           onClick={handleProceed}
-          className="bg-black dark:bg-purple-700 text-white px-6 py-2 rounded-lg font-semibold"
+          className="bg-gradient-to-r from-purple-600 to-pink-500 text-white px-6 py-2 rounded-xl font-bold shadow-lg shadow-purple-300/40 hover:shadow-xl hover:shadow-purple-400/50 hover:scale-105 transition-all duration-300"
         >
           Proceed
         </button>
