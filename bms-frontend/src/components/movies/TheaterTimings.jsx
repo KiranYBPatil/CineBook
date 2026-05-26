@@ -32,7 +32,7 @@ const TheaterTimings = ({ movieId }) => {
   });
 
   if (isLoading) {
-    return <p className="text-center py-6">Loading shows...</p>;
+    return <p className="text-center py-6 text-[var(--text-primary)]">Loading shows...</p>;
   }
 
   if (isError) {
@@ -45,7 +45,7 @@ const TheaterTimings = ({ movieId }) => {
 
   return (
     <>
-      <hr className="my-2 border-gray-200" />
+      <hr className="my-2 border-gray-200 dark:border-gray-700" />
 
       {/* Date Selector */}
       <div className="flex items-center gap-2 mb-4 overflow-x-auto py-4 px-2">
@@ -56,10 +56,10 @@ const TheaterTimings = ({ movieId }) => {
             <button
               key={i}
               onClick={() => setSelectedDate(date)}
-              className={`flex flex-col items-center px-3 py-2 rounded-lg min-w-[50px] border border-gray-200 ${
+              className={`flex flex-col items-center px-3 py-2 rounded-lg min-w-[50px] border border-gray-200 dark:border-gray-600 ${
                 isSelected
-                  ? "bg-black text-white font-semibold"
-                  : "text-black hover:bg-gray-100"
+                  ? "bg-black dark:bg-gray-700 text-white font-semibold"
+                  : "text-black dark:text-[var(--text-primary)] hover:bg-gray-100 dark:hover:bg-gray-800"
               }`}
             >
               <span className="text-sm font-black">{date.format("D")}</span>
@@ -75,7 +75,7 @@ const TheaterTimings = ({ movieId }) => {
       {/* Theater List */}
       <div className="space-y-8 px-4 mb-10">
         {showData?.length === 0 && (
-          <div className="text-center text-gray-500">
+          <div className="text-center text-gray-500 dark:text-gray-400">
             No shows available for selected date.
           </div>
         )}
@@ -90,10 +90,10 @@ const TheaterTimings = ({ movieId }) => {
                 className="w-8 h-8 object-contain"
               />
               <div>
-                <p className="font-semibold">
+                <p className="font-semibold text-[var(--text-primary)]">
                   {curr.theater.theaterDetails.name}
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   {curr.theater.theaterDetails.cancellation}
                 </p>
               </div>
@@ -110,12 +110,12 @@ const TheaterTimings = ({ movieId }) => {
                   <button 
                   onClick = {() => navigate(`/movies/${movieId}/${movieName}/${location}/theater/${theaterId}/show/${slot._id}/seat-layout`)}
                   key={i}
-                  className="border hover:bg-gray-100 border-gray-300 rounded-[16px] px-12 py-2 text-sm flex flex-col items-center justify-center"
+                  className="border hover:bg-gray-100 dark:hover:bg-gray-800 border-gray-300 dark:border-gray-600 rounded-[16px] px-12 py-2 text-sm flex flex-col items-center justify-center bg-[var(--bg-card)]"
                 >
-                  <span className="leading-tight font-semibold">
+                  <span className="leading-tight font-semibold text-[var(--text-primary)]">
                     {slot.startTime}
                   </span>
-                  <span className="text-[10px] text-gray-500 font-black">
+                  <span className="text-[10px] text-gray-500 dark:text-gray-400 font-black">
                     {slot.audioType.toUpperCase()}
                   </span>
                 </button>

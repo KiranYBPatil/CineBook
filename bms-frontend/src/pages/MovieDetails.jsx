@@ -20,7 +20,7 @@ const MovieDetails = () => {
   }
 
   if (!movieData) {
-    return <div className="text-white">Loading...</div>;
+    return <div className="text-[var(--text-primary)]">Loading...</div>;
   }
 
   return (
