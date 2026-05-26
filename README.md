@@ -60,3 +60,5 @@ This system includes advanced features like **concurrent seat locking**, **real-
 The CineBook booking system is fully configured with automated DevOps CI/CD pipelines, Ansible deployment playbooks, and Kubernetes manifests for reliable and automated container orchestration.
 
 Last Updated: May 26, 2026 (DevOps & CI/CD Pipeline Demo)
+
+Chore: minor README formatting tweak (no functional change).
