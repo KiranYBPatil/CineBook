@@ -8,9 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.0] - 2026-05-31
 
 ### Added
-- ⭐ **User Reviews & Ratings** — Logged-in users can rate movies (1-10 stars) and leave comments.
-- 🔄 Automatic calculation of movie overall rating based on user reviews using MongoDB transactions.
-- 🎨 Interactive `ReviewModal` for submission and `ReviewSection` for displaying reviews with dark-mode support.
+- ⭐ **User Reviews & Ratings** — logged-in users can rate movies (1-10) and write text reviews
+- 🗄️ New `review` backend module with MongoDB model, service, controller, and routes
+- 🔄 Automatic movie rating recalculation via aggregation pipeline with transactions
+- 🎨 `ReviewSection` component on Movie Details page showing all reviews in a card grid
+- 📝 `ReviewModal` popup with slider rating and textarea comment
+- 🔒 One review per user per movie enforced via compound unique index
+- 🌙 Full dark mode support on all new components
 
 ## [1.2.0] - 2026-05-31
 
