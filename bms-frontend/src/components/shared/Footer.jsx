@@ -9,6 +9,8 @@ import {
 } from "react-icons/fa";
 import mainLogo from "../../assets/main-icon-white.png";
 
+const APP_VERSION = "v1.1.0";
+
 const Footer = () => {
   return (
     <footer className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-gray-400 text-sm">
@@ -43,6 +45,13 @@ const Footer = () => {
             endorsement of the artist shall be implied.
           </small>
         </p>
+
+        {/* Version Badge */}
+        <div className="mt-4">
+          <span className="px-3 py-1 text-xs font-mono rounded-full bg-purple-600/20 text-purple-400 border border-purple-500/30">
+            {APP_VERSION}
+          </span>
+        </div>
       </div>
     </footer>
   );
