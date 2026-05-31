@@ -1,0 +1,103 @@
+// ═══════════════════════════════════════════════════════════
+// CineBook — Rollback Pipeline
+// ═══════════════════════════════════════════════════════════
+// Usage: In Jenkins, go to this job → "Build with Parameters"
+//        → Pick a version tag (e.g. v1.1.0) → Click Build
+// ═══════════════════════════════════════════════════════════
+
+pipeline {
+    agent any
+
+    // ─── Parameter: Pick the version to rollback to ─────
+    parameters {
+        choice(
+            name: 'ROLLBACK_VERSION',
+            choices: ['v1.2.0', 'v1.1.0', 'v1.0.0'],
+            description: '🏷️ Select the version to deploy/rollback to'
+        )
+    }
+
+    environment {
+        EC2_IP      = '32.236.37.142'
+        EC2_USER    = 'ubuntu'
+        APP_DIR     = '/home/ubuntu/CineBook'
+    }
+
+    stages {
+
+        // ─── 1. Confirm Rollback ─────────────────────
+        stage('Confirm') {
+            steps {
+                echo """
+                ════════════════════════════════════════════
+                ⏪ ROLLBACK — CineBook
+                🏷️ Target Version: ${params.ROLLBACK_VERSION}
+                🌐 Target Server:  ${EC2_IP}
+                ════════════════════════════════════════════
+                """
+            }
+        }
+
+        // ─── 2. Rollback on EC2 ──────────────────────
+        stage('Rollback') {
+            steps {
+                withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER')]) {
+                    // Fix Windows SSH key permissions
+                    bat "icacls \"%SSH_KEY%\" /inheritance:r /grant:r \"SYSTEM:(R)\" /grant:r \"Administrators:(R)\""
+
+                    // Fetch all tags and checkout the target version
+                    bat "ssh -o StrictHostKeyChecking=no -i \"%SSH_KEY%\" %SSH_USER%@${EC2_IP} \"cd ${APP_DIR} && git fetch --all --tags && git checkout ${params.ROLLBACK_VERSION}\""
+
+                    // Record the rolled-back version
+                    bat "ssh -o StrictHostKeyChecking=no -i \"%SSH_KEY%\" %SSH_USER%@${EC2_IP} \"echo '${params.ROLLBACK_VERSION}' > ${APP_DIR}/VERSION\""
+
+                    // Rebuild and restart containers with the old code
+                    bat "ssh -o StrictHostKeyChecking=no -i \"%SSH_KEY%\" %SSH_USER%@${EC2_IP} \"cd ${APP_DIR} && docker compose down && docker compose up -d --build\""
+                }
+            }
+        }
+
+        // ─── 3. Health Check ─────────────────────────
+        stage('Verify') {
+            steps {
+                echo '🏥 Running health check...'
+                bat """
+                    @echo off
+                    setlocal
+                    set RETRIES=0
+                    :LOOP
+                    set /a RETRIES+=1
+                    if %RETRIES% GTR 15 (
+                        echo ❌ Health check failed after 15 attempts!
+                        exit /b 1
+                    )
+                    echo Attempt %RETRIES%/15 - Checking http://${EC2_IP}/api/v1/movies ...
+                    curl -s -o nul -w "%%{http_code}" http://${EC2_IP}/api/v1/movies | findstr "200" >nul
+                    if errorlevel 1 (
+                        echo Waiting 10 seconds...
+                        timeout /t 10 /nobreak >nul
+                        goto LOOP
+                    )
+                    echo ✅ Backend is healthy!
+                """
+            }
+        }
+    }
+
+    post {
+        success {
+            echo """
+            ════════════════════════════════════════════
+            ✅ ROLLBACK SUCCESS!
+            🏷️ Version:   ${params.ROLLBACK_VERSION}
+            🌐 Frontend:  http://${EC2_IP}
+            🔧 API:       http://${EC2_IP}/api/v1
+            ════════════════════════════════════════════
+            """
+        }
+
+        failure {
+            echo "❌ Rollback to ${params.ROLLBACK_VERSION} FAILED!"
+        }
+    }
+}
