@@ -17,6 +17,7 @@ services:
     build:
       context: ./bms-backend
       dockerfile: Dockerfile
+    image: 02fe23bcs129/cinebook-backend:${IMAGE_TAG:-latest}
     container_name: cinebook-backend
     restart: unless-stopped
     expose:
@@ -42,6 +43,7 @@ services:
       dockerfile: Dockerfile
       args:
         VITE_BACKEND_URL: ${VITE_BACKEND_URL:-/api/v1}
+    image: 02fe23bcs129/cinebook-frontend:${IMAGE_TAG:-latest}
     container_name: cinebook-frontend
     restart: unless-stopped
     ports:

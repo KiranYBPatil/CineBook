@@ -11,6 +11,9 @@ pipeline {
         EC2_USER     = 'ubuntu'
         APP_DIR      = '/home/ubuntu/CineBook'
         GITHUB_REPO  = 'https://github.com/KiranYBPatil/CineBook.git'
+
+        // ─── Version tag: git tag if present, else short commit SHA ───
+        IMAGE_TAG    = sh(script: 'git describe --tags --exact-match 2>nul || git rev-parse --short HEAD', returnStdout: true).trim()
     }
 
     // ─── Auto-trigger: check GitHub every 2 min ─
@@ -24,6 +27,13 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
+            }
+        }
+
+        // ─── 1b. Print Version ───────────────
+        stage('Print Version') {
+            steps {
+                echo "🏷️ Building CineBook version: ${IMAGE_TAG}"
             }
         }
 
@@ -66,13 +76,16 @@ pipeline {
         // ─── 6. Deploy via Ansible ───────────
         stage('Ansible Deploy') {
             steps {
-                echo "🚀 Deploying via Ansible to EC2 at ${EC2_IP}..."
+                echo "🚀 Deploying version ${IMAGE_TAG} via Ansible to EC2 at ${EC2_IP}..."
                 withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER')]) {
                     // Fix Windows SSH key permissions
                     bat "icacls \"%SSH_KEY%\" /inheritance:r /grant:r \"SYSTEM:(R)\" /grant:r \"Administrators:(R)\""
 
-                    // Pull latest code on EC2
-                    bat "ssh -o StrictHostKeyChecking=no -i \"%SSH_KEY%\" %SSH_USER%@${EC2_IP} \"cd ${APP_DIR} && git pull origin main\""
+                    // Pull latest code and checkout the exact version on EC2
+                    bat "ssh -o StrictHostKeyChecking=no -i \"%SSH_KEY%\" %SSH_USER%@${EC2_IP} \"cd ${APP_DIR} && git fetch --all --tags && git checkout ${IMAGE_TAG} 2>/dev/null || git pull origin main\""
+
+                    // Record the deployed version on EC2
+                    bat "ssh -o StrictHostKeyChecking=no -i \"%SSH_KEY%\" %SSH_USER%@${EC2_IP} \"echo '${IMAGE_TAG}' > ${APP_DIR}/VERSION\""
 
                     // Run Ansible playbook on EC2 (local connection — Ansible provisions + deploys)
                     bat "ssh -o StrictHostKeyChecking=no -i \"%SSH_KEY%\" %SSH_USER%@${EC2_IP} \"cd ${APP_DIR} && ansible-playbook ansible/deploy.yml -i ansible/inventory.ini\""
@@ -111,7 +124,8 @@ pipeline {
         success {
             echo """
             ════════════════════════════════════════════
-            ✅ PIPELINE SUCCESS — CineBook Deployed!
+            ✅ PIPELINE SUCCESS — CineBook ${IMAGE_TAG} Deployed!
             🌐 Frontend:  http://${EC2_IP}
             🔧 API:       http://${EC2_IP}/api/v1
+            🏷️ Version:   ${IMAGE_TAG}
             🤖 Deployed via: Ansibl

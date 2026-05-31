@@ -14,6 +14,7 @@
     app_dir: /home/ubuntu/CineBook
     github_repo: https://github.com/KiranYBPatil/CineBook.git
     ec2_ip: "{{ lookup('pipe', 'curl -s -m 5 http://169.254.169.254/latest/meta-data/public-ipv4 2>/dev/null') | default('32.236.37.142', true) }}"
+    deploy_version: "{{ lookup('file', app_dir + '/VERSION', errors='ignore') | default('latest', true) | trim }}"
 
   tasks:
 
@@ -136,6 +137,16 @@
       become_user: ubuntu
       environment:
         VITE_BACKEND_URL: "/api/v1"
+        IMAGE_TAG: "{{ deploy_version }}"
+
+    # ─── 7b. Tag built images with version ───────────
+    - name: Tag Docker images with version
+      shell: |
+        docker tag 02fe23bcs129/cinebook-backend:{{ deploy_version }} 02fe23bcs129/cinebook-backend:latest
+        docker tag 02fe23bcs129/cinebook-frontend:{{ deploy_version }} 02fe23bcs129/cinebook-frontend:latest
+        echo "Tagged images with version {{ deploy_version }}"
+      become_user: ubuntu
+      when: deploy_version != 'latest'
 
     # ─── 8. Health Check ───────────────────────────────
     - name: Wait for backend to be healthy
@@ -155,4 +166,5 @@
           ✅ CineBook Deployed via Ansible!
           🌐 Frontend: http://{{ ec2_ip }}
           🔧 API:      http://{{ ec2_ip }}/api/v1
+          🏷️  Version:  {{ deploy_version }}
           ════════════════════════════════════════
