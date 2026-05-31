@@ -1,5 +1,6 @@
 import React from "react";
 import TheaterTimings from "../components/movies/TheaterTimings";
+import ReviewSection from "../components/movies/ReviewSection";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { getMovieById } from "../apis";
 import { useParams } from "react-router-dom";
@@ -87,7 +88,10 @@ const MovieDetails = () => {
       </div>
 
       {/* TheaterTimings and Timings */}
-        <TheaterTimings movieId={id}  />
+      <TheaterTimings movieId={id} />
+
+      {/* User Reviews Section */}
+      <ReviewSection movieId={id} />
     </>
   );
 };

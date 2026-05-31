@@ -41,3 +41,13 @@ export const createBooking = (payload) =>
 export const getMyBookings = () => {
   return api.get("/bookings/me");
 };
+
+/* =======================
+   REVIEWS
+======================= */
+
+export const getMovieReviews = (movieId) =>
+  axiosInstance.get(`/reviews/movie/${movieId}`);
+
+export const addReview = (payload) =>
+  axiosInstance.post("/reviews", payload);
