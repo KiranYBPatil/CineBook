@@ -11,9 +11,6 @@ pipeline {
         EC2_USER     = 'ubuntu'
         APP_DIR      = '/home/ubuntu/CineBook'
         GITHUB_REPO  = 'https://github.com/KiranYBPatil/CineBook.git'
-
-        // ─── Version tag: git tag if present, else short commit SHA ───
-        IMAGE_TAG    = sh(script: 'git describe --tags --exact-match 2>nul || git rev-parse --short HEAD', returnStdout: true).trim()
     }
 
     // ─── Auto-trigger: check GitHub every 2 min ─
@@ -27,13 +24,15 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
-            }
-        }
-
-        // ─── 1b. Print Version ───────────────
-        stage('Print Version') {
-            steps {
-                echo "🏷️ Building CineBook version: ${IMAGE_TAG}"
+                script {
+                    // ─── Version tag: from DEPLOY_VERSION if present, else git tag or short commit SHA ───
+                    env.IMAGE_TAG = sh(script: 'type DEPLOY_VERSION 2>nul || git describe --tags --exact-match 2>nul || git rev-parse --short HEAD', returnStdout: true).trim()
+                    
+                    echo "🏷️ Target Version: ${env.IMAGE_TAG}"
+                    
+                    // Checkout the specific version so Jenkins builds the correct code for testing
+                    bat "git checkout ${env.IMAGE_TAG} 2>nul || echo 'Keeping current branch'"
+                }
             }
         }
 
