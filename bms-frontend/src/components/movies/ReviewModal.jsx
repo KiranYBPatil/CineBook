@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { addReview } from "../../../apis";
+import { addReview } from "../../apis";
 
 const ReviewModal = ({ movieId, isOpen, onClose, onReviewAdded }) => {
   const { token } = useAuth();

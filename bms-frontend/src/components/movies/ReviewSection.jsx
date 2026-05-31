@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { getMovieReviews } from "../../../apis";
-import { useAuth } from "../../../context/AuthContext";
+import { getMovieReviews } from "../../apis";
+import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import ReviewModal from "./ReviewModal";
 
