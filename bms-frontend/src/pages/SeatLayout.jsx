@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSeat } from "../context/SeatContext";
 import { useQuery } from "@tanstack/react-query";
@@ -48,12 +48,14 @@ const Seat = ({
         });
       }}
       className={`w-9 h-9 m-[2px] rounded-lg border text-sm font-medium transition-all duration-150
-        ${
-          isBooked
-            ? "bg-gray-300 text-white cursor-not-allowed border-gray-300"
-            : "hover:bg-purple-100 hover:border-purple-400 cursor-pointer bg-white border-gray-300 text-gray-700"
+        ${isBooked
+          ? "bg-gray-300 text-white cursor-not-allowed border-gray-300"
+          : "hover:bg-purple-100 hover:border-purple-400 cursor-pointer bg-white border-gray-300 text-gray-700"
         }
-        ${isSelected ? "bg-gradient-to-br from-purple-600 to-pink-500 text-white border-purple-600 shadow-md shadow-purple-300/40 scale-105" : ""}
+        ${isSelected
+          ? "bg-gradient-to-br from-purple-600 to-pink-500 text-white border-purple-600 shadow-md shadow-purple-300/40 scale-105"
+          : ""
+        }
       `}
       title={isBooked ? "Seat already booked" : "Available"}
     >
@@ -67,6 +69,10 @@ const SeatLayout = () => {
   const { showId, state } = useParams();
   const navigate = useNavigate();
   const { selectedSeats, toggleSeat } = useSeat();
+
+  /* 🍿 POPCORN STATE */
+  const [popcorn, setPopcorn] = useState(false);
+  const popcornPrice = 150;
 
   const { data: showData, isLoading } = useQuery({
     queryKey: ["show", showId],
@@ -84,7 +90,7 @@ const SeatLayout = () => {
     });
   });
 
-  /* ✅ GROUP BY CATEGORY (NO GUESSING) */
+  /* ✅ GROUP BY CATEGORY */
   const groupedSeats = {};
   showData?.seatLayout.forEach((rowObj) => {
     const category = rowObj.category;
@@ -101,7 +107,11 @@ const SeatLayout = () => {
   });
 
   if (isLoading) {
-    return <div className="p-6 text-gray-500 animate-pulse">Loading seats...</div>;
+    return (
+      <div className="p-6 text-gray-500 animate-pulse">
+        Loading seats...
+      </div>
+    );
   }
 
   const handleProceed = () => {
@@ -109,8 +119,22 @@ const SeatLayout = () => {
       alert("Select at least one seat!");
       return;
     }
-    navigate(`/shows/${showId}/${state}/checkout`);
+
+    navigate(`/shows/${showId}/${state}/checkout`, {
+      state: {
+        popcorn,
+        popcornPrice: popcorn ? popcornPrice : 0,
+      },
+    });
   };
+
+  const totalSeatsPrice = selectedSeats.reduce(
+    (sum, seat) => sum + seat.price,
+    0
+  );
+
+  const totalAmount =
+    totalSeatsPrice + (popcorn ? popcornPrice : 0);
 
   return (
     <div className="h-screen overflow-hidden bg-gradient-to-br from-purple-50 via-white to-pink-50">
@@ -126,7 +150,8 @@ const SeatLayout = () => {
                 <h2 className="font-bold text-lg mb-4 text-gray-700">
                   <span className="bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">
                     {category}
-                  </span> : ₹{price}
+                  </span>{" "}
+                  : ₹{price}
                 </h2>
 
                 {rows.map((rowObj) => (
@@ -159,15 +184,45 @@ const SeatLayout = () => {
           )}
         </div>
 
+        {/* SCREEN */}
         <div className="flex justify-center mt-6">
-          <img src={screenImg} alt="Screen" className="w-[400px] opacity-80" />
+          <img
+            src={screenImg}
+            alt="Screen"
+            className="w-[400px] opacity-80"
+          />
         </div>
       </div>
 
+      {/* 🍿 POPCORN OPTION BAR */}
+      <div className="fixed bottom-[100px] left-0 w-full bg-yellow-50 border-t border-yellow-200 px-6 py-3 flex justify-center items-center gap-6">
+        <label className="flex items-center gap-2 font-semibold text-gray-700">
+          <input
+            type="checkbox"
+            checked={popcorn}
+            onChange={() => setPopcorn(!popcorn)}
+            className="w-4 h-4"
+          />
+          Add Popcorn 🍿 (+₹{popcornPrice})
+        </label>
+      </div>
+
+      {/* BOTTOM BAR */}
       <div className="fixed bottom-0 left-0 w-full h-[100px] bg-white/90 backdrop-blur-sm border-t border-gray-200 px-6 py-4 flex justify-between items-center shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
-        <p className="font-semibold text-gray-700">
-          {selectedSeats.length} Selected
-        </p>
+        <div className="text-sm text-gray-700">
+          <p className="font-semibold">
+            Seats: ₹{totalSeatsPrice}
+          </p>
+          {popcorn && (
+            <p className="text-yellow-600 font-medium">
+              Popcorn: ₹{popcornPrice}
+            </p>
+          )}
+          <p className="font-bold mt-1">
+            Total: ₹{totalAmount}
+          </p>
+        </div>
+
         <button
           onClick={handleProceed}
           className="bg-gradient-to-r from-purple-600 to-pink-500 text-white px-6 py-2 rounded-xl font-bold shadow-lg shadow-purple-300/40 hover:shadow-xl hover:shadow-purple-400/50 hover:scale-105 transition-all duration-300"
